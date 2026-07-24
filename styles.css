@@ -673,12 +673,21 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 /* ---------------------------------------------------------------------
    17. Testimonials
    ------------------------------------------------------------------- */
-.quotes { display: grid; gap: 18px; grid-template-columns: 1fr; max-width: 860px; margin-inline: auto; }
-@media (min-width: 640px) { .quotes { grid-template-columns: repeat(2, 1fr); } }
+/* Horizontal scroll-snap carousel — add as many quotes as you like */
+.quotes {
+  display: flex; gap: 18px;
+  overflow-x: auto; scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+  padding: 4px var(--gutter) 26px; margin-inline: calc(-1 * var(--gutter));
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.quotes::-webkit-scrollbar { display: none; }
 .quote {
+  scroll-snap-align: start; flex: 0 0 auto; width: min(340px, 82vw);
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
   padding: 26px; display: flex; flex-direction: column;
 }
+.quotes:focus-visible { outline: 3px solid var(--lime-ring); outline-offset: 4px; border-radius: 12px; }
 .quote__mark { color: var(--lime-deep); font-size: 2.4rem; line-height: 0.6; font-weight: 800; }
 .quote p { margin-top: 10px; color: var(--fg); font-size: 1rem; }
 .quote__who { margin-top: 20px; display: flex; align-items: center; gap: 12px; }
