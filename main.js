@@ -183,4 +183,86 @@
      ----------------------------------------------------------------- */
   var year = document.querySelector('[data-year]');
   if (year) year.textContent = String(new Date().getFullYear());
+
+  /* -------------------------------------------------------------------
+     Zeb — live scroll guide
+     A floating buddy whose speech bubble swaps to match the section in
+     view (each section carries a data-zeb-tip line). Progressive
+     enhancement: markup ships [hidden]; we only reveal it here. Fully
+     dismissible and calm when the visitor prefers reduced motion.
+     ----------------------------------------------------------------- */
+  (function initZeb() {
+    var guide = document.querySelector('[data-zeb-guide]');
+    if (!guide) return;
+
+    var textEl = guide.querySelector('[data-zeb-text]');
+    var toggleBtn = guide.querySelector('[data-zeb-toggle]');
+    var closeBtn = guide.querySelector('[data-zeb-close]');
+    var tipEls = Array.prototype.slice.call(document.querySelectorAll('[data-zeb-tip]'));
+    var currentTip = null;
+    var dismissed = false;
+
+    // Reveal the guide (respect a returning visitor who dismissed it)
+    try { dismissed = window.sessionStorage.getItem('zeb-dismissed') === '1'; } catch (e) {}
+    guide.hidden = false;
+    if (dismissed) guide.classList.add('is-collapsed');
+    window.setTimeout(function () { guide.classList.add('is-in'); }, 600);
+
+    function setText(msg) {
+      if (!textEl || msg === currentTip) return;
+      currentTip = msg;
+      if (reduceMotion) { textEl.textContent = msg; return; }
+      textEl.classList.add('is-swapping');
+      window.setTimeout(function () {
+        textEl.textContent = msg;
+        textEl.classList.remove('is-swapping');
+      }, 200);
+    }
+
+    function markEngaged() {
+      guide.classList.add('has-engaged'); // stops the attention ping
+    }
+
+    // Expand / collapse the bubble by tapping Zeb
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function () {
+        markEngaged();
+        var nowCollapsed = guide.classList.toggle('is-collapsed');
+        try { window.sessionStorage.setItem('zeb-dismissed', nowCollapsed ? '1' : '0'); } catch (e) {}
+        window.track('zeb_toggle', { open: !nowCollapsed });
+      });
+    }
+    // The × just tucks Zeb away (keeps the little button so he's recallable)
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        markEngaged();
+        guide.classList.add('is-collapsed');
+        try { window.sessionStorage.setItem('zeb-dismissed', '1'); } catch (e2) {}
+        window.track('zeb_dismiss', {});
+      });
+    }
+
+    // Swap the tip to whichever tagged section is most in view
+    if (tipEls.length && 'IntersectionObserver' in window) {
+      var visible = {};
+      var zio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var id = tipEls.indexOf(entry.target);
+          if (entry.isIntersecting) visible[id] = entry.intersectionRatio;
+          else delete visible[id];
+        });
+        // pick the most-visible tagged section
+        var bestId = null, bestRatio = 0;
+        Object.keys(visible).forEach(function (k) {
+          if (visible[k] > bestRatio) { bestRatio = visible[k]; bestId = k; }
+        });
+        if (bestId !== null) {
+          var tip = tipEls[bestId].getAttribute('data-zeb-tip');
+          if (tip) setText(tip);
+        }
+      }, { threshold: [0.15, 0.4, 0.7], rootMargin: '-20% 0px -30% 0px' });
+      tipEls.forEach(function (el) { zio.observe(el); });
+    }
+  })();
 })();
