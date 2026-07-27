@@ -4,7 +4,8 @@
    forest-green bands, a single lime accent, Plus Jakarta Sans.
 
    Design principles (senior pass):
-   • Light only — one warm cream identity, no dark mode.
+   • Light only — one warm cream identity. (The phones inside the bezels do
+     have a dark mode: see the --shot-* tokens and .shot-toggle.)
    • Flat by default — structure comes from borders and background steps,
      not from stacked drop-shadows. Shadow is reserved for the phone
      devices and the one primary button, where lift is meaningful.
@@ -70,8 +71,21 @@
   /* Motion */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
+  /* Screenshot theme — the page stays cream, but the phones inside the
+     bezels show the app's real light or dark build. Defaults to the
+     visitor's own preference; the gallery switch pins it either way. */
+  --shot-bg:  var(--cream);
+  --shot-ind: rgba(22, 26, 23, 0.42);
+
   color-scheme: light;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root { --shot-bg: #131211; --shot-ind: rgba(255, 255, 255, 0.5); }
+}
+/* An explicit choice beats the system one (attribute > :root, either order). */
+html[data-shots="light"] { --shot-bg: var(--cream); --shot-ind: rgba(22, 26, 23, 0.42); }
+html[data-shots="dark"]  { --shot-bg: #131211;      --shot-ind: rgba(255, 255, 255, 0.5); }
 
 /* ---------------------------------------------------------------------
    2. Reset & base
@@ -104,7 +118,7 @@ img { height: auto; }
 
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
-ul { list-style: none; padding: 0; }
+ul, ol { list-style: none; padding: 0; }
 
 h1, h2, h3, h4 { line-height: 1.08; letter-spacing: -0.03em; font-weight: 800; }
 
@@ -425,22 +439,24 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 .device::after { /* power button */
   right: -0.9cqw; top: 20cqw; width: 1cqw; height: 12cqw; border-radius: 0 2px 2px 0;
 }
+/* The v4 captures already carry the bezel padding (their own first/last row
+   extended), so the screen itself has none — that keeps light AND dark shots
+   meeting the bezel in their own colour, including dimmed sheet scrims. */
 .device .screen {
   position: relative;
-  background: var(--cream);
+  background: var(--shot-bg);
   border-radius: 13.6%/6.5%;
   overflow: hidden;
-  padding-top: 5.6cqw;
-  padding-bottom: 2.6cqw;
 }
-.device .screen > img { width: 100%; height: auto; }
+.device .screen picture { display: block; }
+.device .screen img { width: 100%; height: auto; }
 .device .island {
   position: absolute; top: 2cqw; left: 50%; transform: translateX(-50%);
   width: 26cqw; height: 6.6cqw; background: #0a0d0a; border-radius: 999px; z-index: 3;
 }
 .device .home-ind {
   position: absolute; bottom: 1cqw; left: 50%; transform: translateX(-50%);
-  width: 32cqw; height: 1.1cqw; border-radius: 999px; background: rgba(22,26,23,0.42); z-index: 3;
+  width: 32cqw; height: 1.1cqw; border-radius: 999px; background: var(--shot-ind); z-index: 3;
 }
 
 /* Hero phone fan */
@@ -451,7 +467,7 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 }
 .fan .device { position: absolute; top: 0; will-change: transform; }
 .fan .fan-home   { width: 60%; left: 20%; top: 4%; z-index: 3; }
-.fan .fan-plan   { width: 52%; left: 46%; top: 13%; z-index: 1; transform: rotate(6.5deg); transform-origin: bottom center; }
+.fan .fan-zeb    { width: 52%; left: 46%; top: 13%; z-index: 1; transform: rotate(6.5deg); transform-origin: bottom center; }
 .fan .fan-pantry { width: 52%; left: 2%;  top: 13%; z-index: 1; transform: rotate(-6.5deg); transform-origin: bottom center; }
 
 .phone-wrap { display: flex; justify-content: center; }
@@ -537,6 +553,11 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   margin-bottom: 18px;
 }
 .feature__ico svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
+/* Zeb's own row wears his purple, so the assistant reads as its own thing */
+.feature__ico--zeb {
+  background: var(--zeb-purple-soft); border-color: rgba(124, 92, 255, 0.34);
+  color: var(--zeb-purple-ink);
+}
 .feature h3 { font-size: clamp(1.45rem, 2.6vw, 1.95rem); letter-spacing: -0.03em; }
 .feature p { margin-top: 14px; color: var(--fg-muted); font-size: 1.03rem; max-width: 46ch; }
 .feature__list { margin-top: 20px; display: grid; gap: 11px; }
@@ -546,6 +567,15 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 @media (min-width: 900px) {
   .feature { grid-template-columns: 1fr 1fr; }
   .feature--reverse .feature__media { order: 2; }
+}
+
+/* Mobile: lead with the words, follow with a compact screenshot — so the
+   per-feature details read first instead of a full-screen phone hiding them. */
+@media (max-width: 899px) {
+  .feature { gap: 24px; }
+  .feature__body { order: 1; }
+  .feature__media { order: 2; }
+  .feature .phone-wrap .device { max-width: 240px; }
 }
 
 /* ---------------------------------------------------------------------
@@ -565,11 +595,31 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 .gallery__cap span { font-size: 0.86rem; color: var(--fg-muted); }
 .gallery__hint { text-align: center; margin-top: 6px; color: var(--fg-subtle); font-size: 0.84rem; }
 
+/* Light / dark switch for the screenshots (revealed by main.js) */
+.shot-toggle {
+  display: inline-flex; gap: 4px; margin-top: 22px;
+  background: var(--bg-soft); border: 1px solid var(--border-2);
+  border-radius: 999px; padding: 4px;
+}
+.shot-toggle[hidden] { display: none; }
+.shot-toggle button {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 999px;
+  font-size: 0.86rem; font-weight: 700; color: var(--fg-muted);
+  border: 1px solid transparent;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease);
+}
+.shot-toggle button svg { width: 16px; height: 16px; }
+.shot-toggle button[aria-pressed="true"] {
+  background: var(--surface); color: var(--fg); border-color: var(--border);
+}
+
 /* ---------------------------------------------------------------------
    15. Trust / credibility (forest band)
    ------------------------------------------------------------------- */
 .trust-grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
-@media (min-width: 820px) { .trust-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 700px)  { .trust-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1060px) { .trust-grid { grid-template-columns: repeat(4, 1fr); } }
 .trust-card {
   background: rgba(255,255,255,0.05); border: 1px solid var(--forest-hair);
   border-radius: var(--r-lg); padding: 28px;

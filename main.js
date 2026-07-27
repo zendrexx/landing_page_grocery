@@ -138,6 +138,50 @@
   }
 
   /* -------------------------------------------------------------------
+     Screenshots: light / dark
+     Every product shot ships as <picture class="shot"> with a dark <source>
+     gated on prefers-color-scheme, so with JS off the phones already match
+     the visitor's own theme. Here we add a switch that pins either one:
+     flipping source.media between 'all' and 'not all' re-runs the picture
+     selection without touching a single src.
+     ----------------------------------------------------------------- */
+  (function initShots() {
+    var toggleEl = document.querySelector('[data-shot-toggle]');
+    var darkMq = window.matchMedia('(prefers-color-scheme: dark)');
+    var mode = 'auto'; // 'auto' | 'light' | 'dark'
+
+    function paint() {
+      var dark = mode === 'dark' || (mode === 'auto' && darkMq.matches);
+      document.documentElement.setAttribute('data-shots', dark ? 'dark' : 'light');
+      if (mode !== 'auto') {
+        var media = mode === 'dark' ? 'all' : 'not all';
+        document.querySelectorAll('picture.shot > source[data-dark]').forEach(function (s) {
+          s.media = media;
+        });
+      }
+      if (toggleEl) {
+        toggleEl.querySelectorAll('button[data-shot-mode]').forEach(function (b) {
+          b.setAttribute('aria-pressed', b.getAttribute('data-shot-mode') === (dark ? 'dark' : 'light') ? 'true' : 'false');
+        });
+      }
+    }
+
+    paint();
+    darkMq.addEventListener('change', function () { if (mode === 'auto') paint(); });
+
+    if (toggleEl) {
+      toggleEl.hidden = false;
+      toggleEl.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-shot-mode]');
+        if (!btn) return;
+        mode = btn.getAttribute('data-shot-mode');
+        paint();
+        window.track('shots_theme', { theme: mode });
+      });
+    }
+  })();
+
+  /* -------------------------------------------------------------------
      Waitlist form — submits to Web3Forms (see the hidden access_key
      input in index.html). Every signup lands as an email; no backend
      or database required. Swap the access_key to route signups to a

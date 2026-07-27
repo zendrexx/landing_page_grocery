@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>Zebite — Smarter groceries, planned by AI</title>
-<meta name="description" content="Zebite plans your week of meals and groceries around what you have, what you want, and your budget — so you buy only what's missing, hit your macros, and waste less. Meet Zeb, your grocery buddy. iOS &amp; Android." />
+<meta name="description" content="Zebite plans your week of meals and groceries around what you have, what you want, and your budget — so you buy only what's missing, hit your macros, and waste less. Meet Zeb, the in-app AI assistant who can see your pantry, plan and budget. iOS &amp; Android." />
 <link rel="canonical" href="https://zebite.app/" />
 
 <!-- Theme color -->
@@ -102,6 +102,7 @@
         <p class="hero__sub" data-reveal style="--delay:120ms">
           One AI plan built around what you have, what you want, and
           your budget — so you buy only what's missing, hit your macros, and waste less.
+          Zeb, your in-app assistant, is one tap away the whole week.
         </p>
 
         <div class="triad" data-reveal style="--delay:160ms; margin-top:20px">
@@ -136,30 +137,39 @@
         </div>
       </div>
 
-      <!-- Phone fan: Home in front, Meal plan + Pantry behind (parallax) -->
+      <!-- Phone fan: Home in front, Ask Zeb + Pantry behind (parallax) -->
       <div class="hero__visual" data-reveal style="--delay:180ms">
         <div class="fan" data-parallax-scope>
           <div class="device fan-pantry" data-parallax="18">
             <div class="screen">
               <span class="island" aria-hidden="true"></span>
-              <img src="assets/screens/pantry.png" width="400" height="820" loading="lazy" decoding="async"
-                   alt="Pantry screen: 20 items in stock with expiry and low-stock tags like ‘expires in 3 days’." />
+              <picture class="shot">
+                <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/40_pantry.webp" type="image/webp" />
+                <img src="assets/screens/light/40_pantry.webp" width="840" height="1801" loading="lazy" decoding="async"
+                     alt="Pantry screen: 17 items in stock, 7 needing attention, with ‘running low — restock soon’ tags." />
+              </picture>
               <span class="home-ind" aria-hidden="true"></span>
             </div>
           </div>
-          <div class="device fan-plan" data-parallax="30">
+          <div class="device fan-zeb" data-parallax="30">
             <div class="screen">
               <span class="island" aria-hidden="true"></span>
-              <img src="assets/screens/plan_recipe.png" width="400" height="820" loading="lazy" decoding="async"
-                   alt="Meal plan screen: an AI recipe for oatmeal with milk and banana, with ingredients, steps and macros." />
+              <picture class="shot">
+                <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/71_zeb_chat.webp" type="image/webp" />
+                <img src="assets/screens/light/71_zeb_chat.webp" width="840" height="1801" loading="lazy" decoding="async"
+                     alt="Ask Zeb chat: “What can I cook right now?” answered with three meals built from the pantry." />
+              </picture>
               <span class="home-ind" aria-hidden="true"></span>
             </div>
           </div>
           <div class="device fan-home" data-parallax="-8">
             <div class="screen">
               <span class="island" aria-hidden="true"></span>
-              <img src="assets/screens/home.png" width="400" height="820" fetchpriority="high" decoding="async"
-                   alt="Home screen: today's plan with all three meals cooked and daily macro targets hit." />
+              <picture class="shot">
+                <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/10_home.webp" type="image/webp" />
+                <img src="assets/screens/light/10_home.webp" width="840" height="1801" fetchpriority="high" decoding="async"
+                     alt="Home screen: today's three planned meals, progress towards daily macro targets, and a nudge from Zeb about yogurt expiring in 3 days." />
+              </picture>
               <span class="home-ind" aria-hidden="true"></span>
             </div>
           </div>
@@ -231,8 +241,11 @@
           <div class="phone-wrap" style="margin-bottom:22px">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/scan.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Add to pantry sheet: add manually, scan a receipt, or snap your groceries." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/41_add_to_pantry.webp" type="image/webp" />
+                  <img src="assets/screens/light/41_add_to_pantry.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Add to pantry sheet: add manually, scan a receipt, or snap your groceries." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
@@ -247,15 +260,18 @@
           <div class="phone-wrap" style="margin-bottom:22px">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/home.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Home screen showing daily targets for a gain-muscle goal and a weekly budget." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/12_budget_plan.webp" type="image/webp" />
+                  <img src="assets/screens/light/12_budget_plan.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Budget &amp; plan editor: a weekly grocery budget in ₱, days to plan, meals per day, and the computed daily targets." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
           </div>
           <div class="step__n">2</div>
           <h3>Set goal &amp; budget</h3>
-          <p>Pick a goal, diet and allergies, and a weekly ₱ budget. Targets are computed, not guessed.</p>
+          <p>Pick a goal, diet and allergies, a weekly ₱ budget, and how many days and meals to plan.</p>
           <span class="tag">Your macros, your ₱</span>
         </li>
 
@@ -263,15 +279,18 @@
           <div class="phone-wrap" style="margin-bottom:22px">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/plan_recipe.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Meal plan with an expanded AI recipe: ingredients, instructions and per-meal macros." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/80_generate.webp" type="image/webp" />
+                  <img src="assets/screens/light/80_generate.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Generate plan screen: Zeb explains he'll build meals around the pantry first, above a ‘What the AI will use’ list of plan length, budget, diet, allergies and pantry items." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
           </div>
           <div class="step__n">3</div>
           <h3>Generate your plan</h3>
-          <p>The AI writes days of real recipes — ingredients, steps and macros — built around your pantry.</p>
+          <p>Zeb shows you exactly what he'll use, then writes days of real recipes — ingredients, steps, macros.</p>
           <span class="tag">Real recipes</span>
         </li>
 
@@ -279,8 +298,11 @@
           <div class="phone-wrap" style="margin-bottom:22px">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/grocery.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Grocery list with a green ‘Within budget’ hero and one item still to buy." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/30_grocery.webp" type="image/webp" />
+                  <img src="assets/screens/light/30_grocery.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Grocery list with a green ‘Within budget ✓’ hero and three items still to buy." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
@@ -301,7 +323,7 @@
       <div class="section-head" data-reveal>
         <span class="eyebrow">Features</span>
         <h2 class="h-section" id="features-title">Built around what you have,<br />what you want, and your budget</h2>
-        <p class="lead">Five things the app does — all real, all shipping. No barcode scanning, no calorie guessing, no gimmicks.</p>
+        <p class="lead">Six things the app does — all real, all shipping. No barcode scanning, no calorie guessing, no gimmicks.</p>
       </div>
 
       <!-- Feature 1: Pantry-first -->
@@ -311,8 +333,11 @@
           <div class="phone-wrap">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/pantry.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Pantry: produce, meat and fish grouped by category, with expiry and ‘running low’ tags and a +/- stepper." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/40_pantry.webp" type="image/webp" />
+                  <img src="assets/screens/light/40_pantry.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Pantry: produce, meat and fish grouped by category, with ‘running low — restock soon’ tags and a +/- stepper." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
@@ -337,8 +362,11 @@
           <div class="phone-wrap">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/home.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Home: today's meals with calories, and daily targets of 2540 kcal, 148g protein, 71g fat, 328g carbs for a gain-muscle goal." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/10_home.webp" type="image/webp" />
+                  <img src="assets/screens/light/10_home.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Home: today's meals with calories, and daily targets of 2526 kcal, 145g protein, 70g fat, 328g carbs for a gain-muscle goal." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
@@ -363,34 +391,69 @@
           <div class="phone-wrap">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/grocery.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Grocery list: ‘Within budget’, ₱1930 left this week, spent ₱70 of ₱2000, with items already owned checked off." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/30_grocery.webp" type="image/webp" />
+                  <img src="assets/screens/light/30_grocery.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Grocery list: ‘Within budget ✓’, ₱960 left this week, spent ₱540 of ₱1500, priced rows to buy and an ‘already owned’ section." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
           </div>
         </div>
         <div class="feature__body" data-reveal style="--delay:80ms">
-          <div class="feature__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 5h6.5a3.5 3.5 0 0 1 0 7H7m0 0h9M7 5v14m0-7h8"/></svg></div>
+          <div class="feature__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4V20M8 4h4.5a4 4 0 0 1 0 8H8M4.5 8h9M4.5 11.5h9"/></svg></div>
           <h3>Always on budget</h3>
           <p>The grocery list auto-fills from your plan with only what the pantry doesn't cover — kept inside your weekly ₱ budget, with a plain-language note on how it got there.</p>
           <ul class="feature__list">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Money-saving substitution suggestions</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Grounded in crowdsourced local prices (≈ ₱X/unit near you)</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Grounded in crowdsourced local prices — real ₱ per unit near you</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> A clear “Within budget ✓” — or exactly what to swap</li>
           </ul>
         </div>
       </div>
 
-      <!-- Feature 4: Snap to stock -->
+      <!-- Feature 4: Ask Zeb — the in-app assistant -->
       <div class="feature feature--reverse">
         <div class="feature__media" data-reveal>
           <div class="feature__glow" aria-hidden="true"></div>
           <div class="phone-wrap">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/scan.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Add to pantry sheet with options to add manually, scan a receipt and log the spend, or snap your groceries so AI spots the food." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/71_zeb_chat.webp" type="image/webp" />
+                  <img src="assets/screens/light/71_zeb_chat.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Ask Zeb chat: asked “What can I cook right now?”, Zeb answers with egg fried rice, tuna avocado toast and a salmon plate remix — all from ingredients already in the pantry — above quick-reply chips." />
+                </picture>
+                <span class="home-ind" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="feature__body" data-reveal style="--delay:80ms">
+          <div class="feature__ico feature__ico--zeb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H8l-4.2 2.4a.5.5 0 0 1-.8-.5L4 18.2A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8z"/><path d="M9 11h.01M15 11h.01M9.6 14.6a3.4 3.4 0 0 0 4.8 0"/></svg></div>
+          <h3>Ask Zeb, anytime</h3>
+          <p>Zeb isn't a sticker — he's the assistant inside the app. Ask him what to cook tonight, how to stretch the budget, or what to do with the veg that's about to turn. He can see your pantry, your plan and your budget, so the answer is about <em>your</em> kitchen.</p>
+          <ul class="feature__list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> “What can I cook right now?” — answered from what you own</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Tap-to-ask chips for cheapest dinners and quick ideas</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> He speaks up first too — expiry warnings on Home, low-stock notes on your list</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Feature 5: Snap to stock -->
+      <div class="feature">
+        <div class="feature__media" data-reveal>
+          <div class="feature__glow" aria-hidden="true"></div>
+          <div class="phone-wrap">
+            <div class="device">
+              <div class="screen"><span class="island" aria-hidden="true"></span>
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/41_add_to_pantry.webp" type="image/webp" />
+                  <img src="assets/screens/light/41_add_to_pantry.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Add to pantry sheet with options to add manually, scan a receipt and log the spend, or snap your groceries so AI spots the food." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
@@ -408,15 +471,18 @@
         </div>
       </div>
 
-      <!-- Feature 5: Insights -->
-      <div class="feature">
+      <!-- Feature 6: Insights -->
+      <div class="feature feature--reverse">
         <div class="feature__media" data-reveal>
           <div class="feature__glow" aria-hidden="true"></div>
           <div class="phone-wrap">
             <div class="device">
               <div class="screen"><span class="island" aria-hidden="true"></span>
-                <img src="assets/screens/insights.png" width="400" height="820" loading="lazy" decoding="async"
-                     alt="Insights: ₱70 of ₱2000 spent this week, ₱2085 less than last week, 5 meals cooked, average calories 92% and protein 91% of goal, plus an 8-week chart." />
+                <picture class="shot">
+                  <source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/51_insights_charts.webp" type="image/webp" />
+                  <img src="assets/screens/light/51_insights_charts.webp" width="840" height="1801" loading="lazy" decoding="async"
+                       alt="Insights charts: an 8-week spending bar chart against a ₱1.5k budget line, a 7-day calories chart against a 2,526 kcal goal, and a food-waste card flagging greek yogurt expiring in 3 days." />
+                </picture>
                 <span class="home-ind" aria-hidden="true"></span>
               </div>
             </div>
@@ -427,8 +493,8 @@
           <h3>See it working</h3>
           <p>Weekly spending vs. budget, week-over-week change, meals cooked, average calories and protein vs. goal, food-waste status, and an 8-week spending chart.</p>
           <ul class="feature__list">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Watch spending fall: “₱ less than last week”</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> See macros land vs. your daily goal</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Weekly spend against budget, and the ₱ swing from last week</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> See macros land vs. your daily goal, and what's expiring first</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Everything is offline-first and syncs across devices</li>
           </ul>
         </div>
@@ -437,39 +503,64 @@
   </section>
 
   <!-- ===================== GALLERY ===================== -->
-  <section class="section--tight section--soft" aria-labelledby="gallery-title" data-zeb-tip="Peek at every screen — swipe through them! 📱">
+  <section class="section--tight section--soft" aria-labelledby="gallery-title" data-zeb-tip="Peek at every screen — light or dark, take your pick 📱">
 
     <div class="container">
       <div class="section-head section-head--center" data-reveal>
         <span class="eyebrow">Every screen</span>
         <h2 class="h-section" id="gallery-title">See it in the app</h2>
+        <p class="lead">Real captures from the shipping build — and yes, the whole app has a proper dark mode. Flip it and see.</p>
+        <!-- Switches every screenshot on the page. Without JS these follow the
+             visitor's own prefers-color-scheme via <picture media="…">. -->
+        <div class="shot-toggle" role="group" aria-label="Screenshot theme" data-shot-toggle hidden>
+          <button type="button" data-shot-mode="light" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 12H2M22 12h-2.2M6.3 6.3 4.8 4.8M19.2 19.2l-1.5-1.5M17.7 6.3l1.5-1.5M4.8 19.2l1.5-1.5"/></svg>
+            Light
+          </button>
+          <button type="button" data-shot-mode="dark" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.4A8.4 8.4 0 0 1 9.6 4 8.4 8.4 0 1 0 20 14.4z"/></svg>
+            Dark
+          </button>
+        </div>
       </div>
     </div>
     <div class="container">
       <div class="gallery__track" data-reveal tabindex="0" role="group" aria-label="App screenshots, scroll horizontally">
         <figure class="gallery__item">
-          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><img src="assets/screens/home.png" width="400" height="820" loading="lazy" decoding="async" alt="Home — today's plan, all meals cooked, daily targets hit." /><span class="home-ind" aria-hidden="true"></span></div></div>
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/10_home.webp" type="image/webp" /><img src="assets/screens/light/10_home.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Home — today's plan, progress and daily targets." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
           <figcaption class="gallery__cap"><b>Home</b><span>Today's plan &amp; targets</span></figcaption>
         </figure>
         <figure class="gallery__item">
-          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><img src="assets/screens/plan_recipe.png" width="400" height="820" loading="lazy" decoding="async" alt="Meal plan — expanded AI recipe with ‘Cook this’." /><span class="home-ind" aria-hidden="true"></span></div></div>
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/21_plan_recipe.webp" type="image/webp" /><img src="assets/screens/light/21_plan_recipe.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Meal plan — expanded AI recipe with ingredients, steps and ‘Cook this’." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
           <figcaption class="gallery__cap"><b>Meal plan</b><span>AI recipes &amp; macros</span></figcaption>
         </figure>
         <figure class="gallery__item">
-          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><img src="assets/screens/pantry.png" width="400" height="820" loading="lazy" decoding="async" alt="Pantry — categorized with expiry and low-stock states." /><span class="home-ind" aria-hidden="true"></span></div></div>
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/71_zeb_chat.webp" type="image/webp" /><img src="assets/screens/light/71_zeb_chat.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Ask Zeb — a chat answering what to cook from the pantry." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
+          <figcaption class="gallery__cap"><b>Ask Zeb</b><span>Your in-app assistant</span></figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/40_pantry.webp" type="image/webp" /><img src="assets/screens/light/40_pantry.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Pantry — categorized with expiry and low-stock states." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
           <figcaption class="gallery__cap"><b>Pantry</b><span>Expiry &amp; low-stock</span></figcaption>
         </figure>
         <figure class="gallery__item">
-          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><img src="assets/screens/grocery.png" width="400" height="820" loading="lazy" decoding="async" alt="Grocery list — within-budget hero." /><span class="home-ind" aria-hidden="true"></span></div></div>
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/30_grocery.webp" type="image/webp" /><img src="assets/screens/light/30_grocery.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Grocery list — within-budget hero with priced rows." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
           <figcaption class="gallery__cap"><b>Grocery list</b><span>Only what's missing</span></figcaption>
         </figure>
         <figure class="gallery__item">
-          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><img src="assets/screens/insights.png" width="400" height="820" loading="lazy" decoding="async" alt="Insights — spending and nutrition dashboard." /><span class="home-ind" aria-hidden="true"></span></div></div>
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/22_cook_sheet.webp" type="image/webp" /><img src="assets/screens/light/22_cook_sheet.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Start cooking — a confirm sheet that checks the pantry covers the recipe." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
+          <figcaption class="gallery__cap"><b>Cook this</b><span>Deducts from your pantry</span></figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/51_insights_charts.webp" type="image/webp" /><img src="assets/screens/light/51_insights_charts.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Insights — spending and nutrition charts plus food-waste warnings." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
           <figcaption class="gallery__cap"><b>Insights</b><span>Spending &amp; nutrition</span></figcaption>
         </figure>
         <figure class="gallery__item">
-          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><img src="assets/screens/scan.png" width="400" height="820" loading="lazy" decoding="async" alt="Snap to stock — scan a receipt or snap your groceries." /><span class="home-ind" aria-hidden="true"></span></div></div>
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/41_add_to_pantry.webp" type="image/webp" /><img src="assets/screens/light/41_add_to_pantry.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Snap to stock — scan a receipt or snap your groceries." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
           <figcaption class="gallery__cap"><b>Snap to stock</b><span>Receipt or shelf photo</span></figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="device"><div class="screen"><span class="island" aria-hidden="true"></span><picture class="shot"><source data-dark media="(prefers-color-scheme: dark)" srcset="assets/screens/dark/80_generate.webp" type="image/webp" /><img src="assets/screens/light/80_generate.webp" width="840" height="1801" loading="lazy" decoding="async" alt="Generate plan — Zeb lists exactly what the AI will use before it writes the week." /></picture><span class="home-ind" aria-hidden="true"></span></div></div>
+          <figcaption class="gallery__cap"><b>Generate</b><span>What the AI will use</span></figcaption>
         </figure>
       </div>
       <p class="gallery__hint">Swipe or scroll to browse →</p>
@@ -486,7 +577,7 @@
         <img class="zeb-pose zeb-pose--ai" src="assets/zeb/ai.webp" alt="Zeb thinking, with an AI thought bubble" width="200" height="200" loading="eager" decoding="async" />
         <span class="eyebrow">Why it's smart</span>
         <h2 class="h-section" id="trust-title">Grounded, not guessed</h2>
-        <p class="lead">Zeb doesn’t make things up. Three quiet things make the plans trustworthy — a real nutrition model, a pantry-first bias, and budgets built on real numbers.</p>
+        <p class="lead">Zeb doesn’t make things up. Four quiet things make the plans — and his answers — trustworthy.</p>
       </div>
       <div class="trust-grid">
         <article class="trust-card" data-reveal>
@@ -503,6 +594,11 @@
           <div class="trust-card__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11l7.6-7.6a2 2 0 0 1 1.4-.6H18a3 3 0 0 1 3 3v5.9a2 2 0 0 1-.6 1.4L13 20a2 2 0 0 1-2.8 0L3 13.8a2 2 0 0 1 0-2.8z"/><circle cx="16.5" cy="7.5" r="1.4"/></svg></div>
           <h3>Budgets on real prices</h3>
           <p>Weekly budgets ride on crowdsourced, anonymized local grocery prices near you — real numbers, not stock guesses.</p>
+        </article>
+        <article class="trust-card" data-reveal style="--delay:270ms">
+          <div class="trust-card__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H8l-4.2 2.4a.5.5 0 0 1-.8-.5L4 18.2A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8z"/><path d="M9 11h.01M15 11h.01M9.6 14.6a3.4 3.4 0 0 0 4.8 0"/></svg></div>
+          <h3>Zeb answers from your data</h3>
+          <p>Ask Zeb reads your actual pantry, plan and budget before it replies — so it's advice about your kitchen this week, not generic internet cooking tips.</p>
         </article>
       </div>
     </div>
@@ -576,6 +672,7 @@
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 3 AI meal plans per week</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Pantry tracking &amp; grocery lists</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Nutrition targets &amp; daily goals</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Ask Zeb — a few chats a week</li>
           </ul>
         </article>
 
@@ -594,6 +691,7 @@
           <ul class="plan__feats">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Everything in Free</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Unlimited AI meal plans</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Unlimited Ask Zeb</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Smarter budget substitutions</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Deeper insights &amp; trends</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Priority generation</li>
@@ -695,6 +793,10 @@
           <p>Targets are computed deterministically with the Mifflin-St Jeor equation (BMR → TDEE → adjusted for your goal), not guessed. The AI reasons over those numbers to build recipes — it never invents calorie figures.</p>
         </details>
         <details class="faq-item" data-reveal>
+          <summary>Is Zeb just a mascot?</summary>
+          <p>No — Zeb is the assistant inside the app. There's an <b>Ask Zeb</b> chat you can open any time to ask what to cook right now, how to stretch the budget, or what to do with something about to expire, and he reads your real pantry, plan and budget before answering. He also speaks up on his own: expiry warnings on Home, low-stock notes on your grocery list, and a summary of what the AI will use before it generates a plan.</p>
+        </details>
+        <details class="faq-item" data-reveal>
           <summary>Do I have to type in my whole pantry by hand?</summary>
           <p>You can, but you don't have to. Snap a photo of a receipt or your shelf and the AI reads the items and adds them to your pantry — and can log the spend too.</p>
         </details>
@@ -704,11 +806,15 @@
         </details>
         <details class="faq-item" data-reveal>
           <summary>Where do the local prices come from?</summary>
-          <p>From crowdsourced, anonymized community prices — “≈ ₱X/unit near you” — so budgets ride on real numbers instead of guesses.</p>
+          <p>From crowdsourced, anonymized community prices — real ₱ per unit near you — so budgets ride on real numbers instead of guesses.</p>
         </details>
         <details class="faq-item" data-reveal>
           <summary>Does it work offline and across devices?</summary>
           <p>It's offline-first, so it works without a connection, and your data syncs across devices when you're signed in.</p>
+        </details>
+        <details class="faq-item" data-reveal>
+          <summary>Is there a dark mode?</summary>
+          <p>Yes — every screen is built for light and dark, and you can pin either one or follow your system in Profile → Appearance. The screenshots on this page are real captures of both; use the Light / Dark switch above to flip them.</p>
         </details>
         <details class="faq-item" data-reveal>
           <summary>Is it only for the Philippines?</summary>

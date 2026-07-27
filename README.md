@@ -32,17 +32,34 @@ npx serve .        # or: python -m http.server 8000
 
 ## Assets
 
-Product imagery is **real app screenshots** (400×820), framed in
-iPhone-15-Pro-style device mockups drawn in CSS (`.device`):
+Product imagery is **real app screenshots**, framed in iPhone-15-Pro-style
+device mockups drawn in CSS (`.device`). Every screen ships in both themes:
+
+- `assets/screens/v4/{light,dark}/` — the masters, 2580 × 5592 straight off a
+  device (see that folder's own README). **Source only — don't deploy them.**
+- `assets/screens/{light,dark}/*.webp` — what the page actually loads, 840 ×
+  1801, ~50 KB each. Built by `python assets/screens/v4/export_web.py`, which
+  crops the Android status/gesture bars off and extends the first and last row
+  into the bezel padding, so a dark shot never meets a cream bezel.
 
 | File | Screen |
 | --- | --- |
-| `assets/screens/home.png` | Today's plan, all meals cooked, targets hit |
-| `assets/screens/plan_recipe.png` | Meal plan + expanded AI recipe |
-| `assets/screens/pantry.png` | Categorized pantry, expiry / low-stock |
-| `assets/screens/grocery.png` | Grocery list, "Within budget ✓" |
-| `assets/screens/insights.png` | Spending + nutrition dashboard |
-| `assets/screens/scan.png` | Snap to stock (receipt / groceries) |
+| `10_home` | Today's plan, progress, daily targets |
+| `12_budget_plan` | Weekly ₱ budget, days + meals per day |
+| `21_plan_recipe` | Meal plan + expanded AI recipe |
+| `22_cook_sheet` | "Start cooking?" — what it deducts |
+| `30_grocery` | Grocery list, "Within budget ✓" |
+| `40_pantry` | Categorized pantry, expiry / low-stock |
+| `41_add_to_pantry` | Snap to stock (receipt / groceries) |
+| `51_insights_charts` | Spending + nutrition charts, food waste |
+| `71_zeb_chat` | Ask Zeb — the in-app assistant |
+| `80_generate` | "What the AI will use" before generating |
+
+Screenshots follow the visitor's `prefers-color-scheme` on their own (each is a
+`<picture class="shot">` with a dark `<source>`); the Light / Dark switch in the
+gallery pins one, by flipping `source.media` rather than rewriting `src`. To add
+a screen: add its name to `SCREENS` in `export_web.py`, re-run it, and copy an
+existing `<picture class="shot">` block.
 
 `assets/logo.svg` / `assets/favicon.svg` are the leaf-in-forest-tile lockup.
 `assets/og-image.png` is the brand forest social artwork (1200×630).
