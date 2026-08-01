@@ -229,9 +229,14 @@ p, li { text-wrap: pretty; }
 .lines em { font-style: normal; }
 
 /* Hero load choreography — these are driven by a timeline on load rather
-   than by scroll, so they get their own hooks. */
-.js [data-hero-el]  { opacity: 0; transform: translateY(22px); }
-.js [data-hero-fan] { opacity: 0; transform: translateY(30px) scale(0.94); }
+   than by scroll, so they get their own hooks. Nothing in the hero rises
+   from below: it closes in from the two outer edges instead — the copy
+   from outside the left edge, the phone stage from outside the right — and
+   the section's own overflow:hidden is what hides them on the way in. */
+.js .hero__title.lines .line { overflow: visible; }
+.js .hero__title .line > span { transform: translateX(-135%); }
+.js [data-hero-el]  { opacity: 0; transform: translateX(-90px); }
+.js [data-hero-fan] { opacity: 0; transform: translateX(110px) scale(0.94); }
 .js [data-hero-zeb] { opacity: 0; transform: translateY(18px) scale(0.9); }
 
 /* The two back phones start off-stage on their own side and fly in. Stated
@@ -442,22 +447,15 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 /* ---------------------------------------------------------------------
    6. Forest bands (calm — subtle grid, no grain)
    ------------------------------------------------------------------- */
-/* The dark bands are the page's punctuation. Framing them as inset rounded
-   panels — ground visible down both sides — is what turns a flat colour
-   block into something that reads as lifted off the page. */
+/* The dark bands are the page's punctuation. They run full-bleed — edge to
+   edge, square corners — so each one reads as ground the page stands on
+   rather than as one more card floating in the stack. */
 .forest {
   position: relative;
   color: var(--on-forest);
   background: linear-gradient(150deg, var(--grad-a) 0%, var(--grad-b) 55%, var(--grad-c) 100%);
   isolation: isolate;
   overflow: hidden;
-}
-@media (min-width: 900px) {
-  .forest {
-    margin-inline: clamp(16px, 3vw, 34px);
-    border-radius: var(--r-3xl);
-    box-shadow: var(--glow-forest);
-  }
 }
 .forest .grid-tex {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -618,11 +616,14 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 .hero__pill b { color: var(--fg); font-weight: 700; }
 
 /* The headline carries the hero almost on its own, so it runs a lot larger
-   than the body scale and everything else stays deliberately quiet. */
+   than the body scale and everything else stays deliberately quiet.
+   Tracking stays negative — at this size the default gaps read as gaps —
+   but only just: past about -0.03em the arm of the "r" in "Smarter" walks
+   into the stem of the "t" and the pair fuses into one shape. */
 .hero h1 {
   position: relative;
   font-size: clamp(3.1rem, 8.2vw, 6.2rem);
-  letter-spacing: -0.055em;
+  letter-spacing: -0.026em;
   line-height: 0.98;
   font-weight: 800;
 }
@@ -630,17 +631,24 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 
 /* Hand-drawn accents */
 
-/* The doodle band above the headline. It sits in normal flow — an absolute
-   one would ride up into the nav whenever the viewport got short — and
-   pulls itself back down onto the first line with a negative margin. */
+/* The two bursts over the tail of "Smarter". It sits in normal flow — an
+   absolute one would ride up into the nav whenever the viewport got short —
+   and pulls itself back down onto the first line with a negative margin.
+   The font-size clamp is the headline's own, so 1em here is 1em there and
+   the margin-left below is a measured letter offset: "er" starts 2.86em
+   into the line and ends at 3.80em, whatever the viewport does to the
+   type. "Smarter" is always the first word of the first line, so the marks
+   stay on those two letters through every reflow. The box is wider than
+   the two letters because the last mark carries on past the word — the
+   left edge is what's pinned, not the middle. */
 .hero__doodles {
   display: block;
-  width: min(62%, 320px); height: auto;
-  margin: 0 0 clamp(-22px, -1.6vw, -8px) -6px;
+  font-size: clamp(3.1rem, 8.2vw, 6.2rem);
+  width: 1.41em; height: auto;
+  margin: 0 0 -0.13em 2.75em;
   overflow: visible;
   pointer-events: none;
 }
-@media (max-width: 620px) { .hero__doodles { width: min(78%, 240px); } }
 
 .hero__scribble {
   display: block;
@@ -648,15 +656,6 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   margin-top: -0.12em;
   overflow: visible;
 }
-/* Sits inside the h1 (which is position:relative) so it tracks the headline
-   rather than the section — it belongs to the first line, not the page. */
-.hero__spark {
-  position: absolute;
-  top: -0.34em; left: 63%;
-  width: clamp(52px, 6vw, 86px); height: auto;
-  pointer-events: none;
-}
-@media (max-width: 959px) { .hero__spark { display: none; } }
 
 .hero__sub {
   margin-top: 26px; max-width: 42ch;
@@ -852,6 +851,17 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 }
 .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
+/* The silhouette under the dots. The dot pattern is in user units, so it
+   shrinks with the viewBox — at phone width the dots fall to under 1px and
+   the archipelago dissolves into grey fuzz. This flat layer is what actually
+   holds the shape; the dots read as texture on top of it.
+
+   The same values are also on the elements as fill="" attributes. A <use>
+   with no fill inherits black, so if this stylesheet is slow, cached stale or
+   blocked, the fallback is a faint island — not a solid black Philippines. */
+.map-land { fill: rgba(22, 26, 23, 0.07); }
+.map-land--lit { fill: rgba(78, 138, 46, 0.14); }
+
 /* The lit overlay is the same island geometry drawn again in bright lime,
    then revealed through an expanding mask — that is the ripple. Animating
    one mask circle beats animating a few hundred dots. Starts invisible so
@@ -867,8 +877,15 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 
 /* --- Pins ------------------------------------------------------------ */
 .pin { cursor: pointer; }
-.pin__hit { fill: transparent; }          /* 22px touch target */
-.pin__shadow { fill: rgba(13,46,33,0.18); }
+/* Radius is generated, not fixed: 22 user units where there's room, half the
+   gap where there isn't. Baguio and Pangasinan are 40 km apart. */
+.pin__hit { fill: transparent; }
+/* fill-box on all three marks: the entrance scales these, not the group, so
+   each one has to scale about its own centre. */
+.pin__shadow {
+  fill: rgba(13,46,33,0.18);
+  transform-box: fill-box; transform-origin: center;
+}
 .pin__ring {
   fill: none; stroke: var(--lime-deep); stroke-width: 1.6;
   transform-box: fill-box; transform-origin: center;
@@ -936,9 +953,11 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 }
 @keyframes live-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-/* Hand-placed so they sit in the sea, never over the islands. */
+/* Hand-placed so they sit in the sea, never over the islands — and clear of
+   the pin labels, which run outward from the coast. Eggs sits below the
+   Pangasinan label rather than beside it. */
 .price-card--rice   { top:  6%; right: -4%; }
-.price-card--eggs   { top: 30%; left:  -6%; }
+.price-card--eggs   { top: 42%; left:  -6%; }
 .price-card--meat   { top: 52%; right: -6%; }
 .price-card--veg    { bottom: 8%; left: -2%; }
 
@@ -951,6 +970,21 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   .price-card--eggs { left: -3%; }
   .price-card--meat { right: -3%; }
   .price-card--veg  { left: 0; }
+
+  /* Phone map. Everything in the SVG is in user units, so a 340px-wide stage
+     renders the whole thing at ~0.57× — 11px labels land at 6px and four of
+     them at once turn the archipelago into a word cloud. So: heavier
+     silhouette, bigger dots, and only the live city keeps its name. The
+     confidence panel underneath names it too, so nothing is lost. */
+  .map-land { fill: rgba(22, 26, 23, 0.1); }
+  .map-land--lit { fill: rgba(78, 138, 46, 0.2); }
+  #dotIdle circle  { r: 2.2; }
+  #dotLuzon circle { r: 2.4; }
+  #dotGlow circle  { r: 2.5; }
+
+  .pin__label { font-size: 19px; stroke-width: 6px; opacity: 0; }
+  .pin.is-active .pin__label { opacity: 1; }
+  .pin__dot { stroke-width: 2.6; }
 }
 
 /* --- Copy column ----------------------------------------------------- */

@@ -27,7 +27,9 @@ the trailing `sourceMappingURL` comment (the `.map` files are not deployed).
 - `main.js` — motion system, price-intelligence map, mobile menu, pricing
   toggle, FAQ, waitlist, analytics hooks.
 - `assets/` — real app screenshots, Zeb mascot art, self-hosted fonts, vendored
-  JS, OG image.
+  JS, OG image, and `assets/data/prices.json` (the map's city + price table).
+- `tools/map/` — the one dev-time script in the repo (see **The map**). Not
+  deployed; it's named in `.assetsignore`.
 
 ### Motion
 
@@ -102,6 +104,64 @@ existing `<picture class="shot">` block.
 `assets/logo.svg` / `assets/favicon.svg` are the leaf-in-forest-tile lockup.
 `assets/og-image.png` is the brand forest social artwork (1200×630).
 
+## The map
+
+The `#prices` archipelago is **generated, not drawn**. It used to be hand-drawn
+SVG with pins nudged until they looked right, and they weren't: Baguio sat out
+near Agoo, Metro Manila somewhere around Tarlac. Now both the coastline and
+every pin come out of one Mercator projection, so a pin can't drift off its
+province.
+
+| Input | What it is |
+| --- | --- |
+| `tools/map/ph-coastline.json` | Natural Earth **1:10m** Philippines, outer rings, public domain |
+| `assets/data/prices.json` | the city list — real lat/lng — plus the figures each pin shows |
+
+```bash
+node tools/map/build-map.mjs          # rewrite the generated regions
+node tools/map/build-map.mjs --check  # non-zero exit if they're stale
+node tools/map/build-map.mjs --print  # dump to stdout, touch nothing
+```
+
+It only ever writes between `map:<name>:start` / `map:<name>:end` markers in
+`index.html` and `main.js` — islands, Luzon, routes, pins, the `<desc>`, the
+projection constants and the inline fallback table. **Don't hand-edit between
+those markers.** It also refuses to finish if a city doesn't land on an island,
+which is the check the old hand-placed version never had.
+
+### Filling in the data
+
+Everything lives in `assets/data/prices.json`:
+
+- **Change a number** — edit it. The page `fetch`es this file at runtime, so a
+  price change is a deploy of one JSON file, no rebuild.
+- **Add a city** — add an entry with real `lat`/`lng`, put its key in `order`,
+  optionally add a `routes` pair, then re-run the script. Pins are markup, so
+  this step is what actually puts one on the map; a city the JSON knows about
+  but the map doesn't gets a console warning telling you to re-run.
+- **Point at a real API** — swap the `fetch` URL in `initPriceMap`. Same shape,
+  same keys, no other changes.
+- **`label.dx` / `label.dy` / `label.anchor`** nudge a pin's text; the touch
+  target sizes itself to the gap between neighbouring pins.
+
+1:10m rather than the ~6× lighter 1:50m because at 50m the generalized west
+coast of Luzon is drawn east of where it really is — far enough that Baguio's
+true coordinates land in the sea. The detail is spent on accuracy and paid back
+by Douglas–Peucker simplification (`SIMPLIFY`, in viewBox px) afterwards.
+
+Two things that bit during the rewrite, worth knowing before you touch the SVG:
+
+- **Never scale a pin `<g>` about a GSAP `svgOrigin`.** It leaves a residual
+  translate the size of the group's bounding box — and the box includes the
+  label, so "Pangasinan" threw its pin ~75 units out to sea. Scale
+  `.pin__dot / .pin__ring / .pin__shadow` instead; they each carry
+  `transform-box: fill-box`.
+- **The dot pattern is in user units**, so it scales down with the viewBox and
+  on a phone the archipelago dissolved into grey fuzz. What carries the shape
+  at small sizes is the flat `.map-land` silhouette under the dots — and its
+  colour is also a `fill=""` attribute on the element, because a `<use>` with
+  no fill inherits *black*.
+
 ## Editing the essentials
 
 - **Brand palette / type** — `:root` tokens at the top of `styles.css`
@@ -131,10 +191,18 @@ assistant, or store-route optimization. The app has community **prices**, not
 community recipes. Testimonials are clearly marked placeholder copy — no names,
 star counts, or download numbers are invented.
 
-**The price-intelligence map (`#prices`) is sample data.** The city figures,
-confidence scores, contributor counts and "updated N mins ago" values live in the
-`CITIES` table in `main.js` and are not wired to anything. The section carries a
-visible `Sample data — illustrative` line under the map, and it must keep it
-until those numbers come from the real pricing backend. The underlying claim —
-that budgets ride on crowdsourced local prices — is true and is already made
-elsewhere on the page; the map illustrates it, it does not report it.
+**The price-intelligence map (`#prices`) still shows placeholder figures.** The
+prices, confidence scores, contributor counts and "updated N mins ago" values
+come from `assets/data/prices.json` and are not wired to the pricing backend.
+The underlying claim — that budgets ride on crowdsourced local prices — is true
+and is made elsewhere on the page; the map illustrates it, it does not report
+it. Map coverage is Luzon, and the pins say so: the rest of the archipelago is
+drawn but unpinned.
+
+The `Sample data — illustrative` line that used to sit under the map was
+removed on the owner's instruction (2026-08-01). **The figures above it did not
+become real when it went.** The mechanism is still wired and one uncomment away:
+the commented-out `<p class="prices__disclaimer">` in `index.html`, driven by
+`data-state`, which `main.js` flips to `live` only when `prices.json` says
+`"source": "live"`. Restore it, or set `source` to `live` once the numbers are
+genuinely coming from the backend — those are the two honest end states.

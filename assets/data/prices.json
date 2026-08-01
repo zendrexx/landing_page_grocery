@@ -3,15 +3,17 @@
     "Source of truth for the #prices map: the city list, where each pin sits, and the numbers it shows.",
     "Coordinates are real lat/lng — tools/map/build-map.mjs projects them, so a pin cannot drift off its province.",
     "Edit this file, then run: node tools/map/build-map.mjs",
-    "source: 'sample' keeps the 'Sample data — illustrative' line under the map. Only set it to 'live' when",
-    "these numbers actually come from the pricing backend — see the honesty note in README.md.",
+    "Coverage is Luzon for now; the rest of the archipelago is drawn but unpinned. Adding a Visayas or",
+    "Mindanao city is just another entry here plus a re-run — nothing in the map is hand-placed.",
+    "These figures are placeholders until they come from the pricing backend. Setting source to 'live'",
+    "is what tells the page they are real — see the honesty note in README.md.",
     "label.dx / label.dy nudge the pin's text; label.anchor 'end' puts the text to the left of the pin."
   ],
 
   "source": "sample",
   "updated": "2026-08-01",
   "seed": "manila",
-  "order": ["manila", "baguio", "cebu", "iloilo", "naga", "davao"],
+  "order": ["manila", "baguio", "pangasinan", "tarlac", "zambales", "vigan", "tuguegarao", "naga"],
 
   "cities": {
     "manila": {
@@ -22,35 +24,47 @@
     "baguio": {
       "name": "Baguio", "lat": 16.4023, "lng": 120.5960,
       "rice": 52, "eggs": 8, "chicken": 205, "updated": 6, "conf": 87, "n": 410,
-      "label": { "dx": -14, "dy": -4, "anchor": "end" }
+      "label": { "dx": 13, "dy": -5 }
+    },
+    "pangasinan": {
+      "name": "Pangasinan", "lat": 16.0219, "lng": 120.2317,
+      "rice": 43, "eggs": 8, "chicken": 181, "updated": 38, "conf": 71, "n": 168,
+      "label": { "dx": -13, "dy": 14, "anchor": "end" }
+    },
+    "vigan": {
+      "name": "Vigan", "lat": 17.5747, "lng": 120.3869,
+      "rice": 47, "eggs": 8, "chicken": 190, "updated": 52, "conf": 64, "n": 96,
+      "label": { "dx": -13, "dy": -4, "anchor": "end" }
+    },
+    "tuguegarao": {
+      "name": "Tuguegarao", "lat": 17.6132, "lng": 121.7270,
+      "rice": 42, "eggs": 7, "chicken": 179, "updated": 63, "conf": 61, "n": 84,
+      "label": { "dx": 13, "dy": -4 }
+    },
+    "tarlac": {
+      "name": "Tarlac", "lat": 15.4802, "lng": 120.5979,
+      "rice": 44, "eggs": 8, "chicken": 186, "updated": 27, "conf": 74, "n": 205,
+      "label": { "dx": 13, "dy": 4 }
+    },
+    "zambales": {
+      "name": "Zambales", "lat": 15.3276, "lng": 119.9787,
+      "rice": 46, "eggs": 9, "chicken": 192, "updated": 44, "conf": 66, "n": 112,
+      "label": { "dx": -13, "dy": 4, "anchor": "end" }
     },
     "naga": {
       "name": "Naga", "lat": 13.6218, "lng": 123.1948,
       "rice": 46, "eggs": 8, "chicken": 188, "updated": 24, "conf": 78, "n": 210,
       "label": { "dx": 14, "dy": -4 }
-    },
-    "iloilo": {
-      "name": "Iloilo", "lat": 10.7202, "lng": 122.5621,
-      "rice": 45, "eggs": 8, "chicken": 182, "updated": 17, "conf": 81, "n": 305,
-      "label": { "dx": -13, "dy": 12, "anchor": "end" }
-    },
-    "cebu": {
-      "name": "Cebu", "lat": 10.3157, "lng": 123.8854,
-      "rice": 49, "eggs": 9, "chicken": 198, "updated": 9, "conf": 85, "n": 520,
-      "label": { "dx": 14, "dy": 12 }
-    },
-    "davao": {
-      "name": "Davao", "lat": 7.0731, "lng": 125.6128,
-      "rice": 44, "eggs": 7, "chicken": 176, "updated": 31, "conf": 73, "n": 190,
-      "label": { "dx": 14, "dy": 4 }
     }
   },
 
   "routes": [
-    ["baguio", "manila"],
-    ["manila", "naga"],
-    ["manila", "iloilo"],
-    ["iloilo", "cebu"],
-    ["cebu", "davao"]
+    ["vigan", "baguio"],
+    ["tuguegarao", "baguio"],
+    ["pangasinan", "baguio"],
+    ["zambales", "pangasinan"],
+    ["baguio", "tarlac"],
+    ["tarlac", "manila"],
+    ["manila", "naga"]
   ]
 }

@@ -8,8 +8,13 @@
  * of a projection can't drift like that, so both the coastline and every pin
  * are computed here from real numbers:
  *
- *   coastline  tools/map/ph-coastline.json   Natural Earth 1:50m, public domain
+ *   coastline  tools/map/ph-coastline.json   Natural Earth 1:10m, public domain
  *   cities     assets/data/prices.json       lat/lng + the prices themselves
+ *
+ * 1:10m, not the lighter 1:50m: at 50m the generalized west coast of Luzon is
+ * drawn east of where it really is, far enough that Baguio's true coordinates
+ * land in the sea. A coastline you place pins against has to be the accurate
+ * one, so the detail is spent here and paid back by simplifying afterwards.
  *
  * Run it after editing either one:
  *
@@ -50,8 +55,12 @@ const mercY = (lat) => Math.log(Math.tan(Math.PI / 4 + rad(lat) / 2));
 /* Tuning knobs. The dot pattern only paints where a dot's centre lands inside
    the shape, so anything under about 2×2 dots draws as nothing at all — dead
    markup that still counts towards the bounding box and quietly shrinks the
-   whole archipelago. Dropped instead. */
-const SIMPLIFY = 0.55;  // Douglas–Peucker tolerance, in viewBox px
+   whole archipelago. Dropped instead.
+
+   SIMPLIFY is the one number that trades page weight against coastline: 1.0px
+   here is ~2.6 km on the ground, well under one dot spacing, and takes the
+   10m data from ~7,000 points to ~1,000. */
+const SIMPLIFY = 1;     // Douglas–Peucker tolerance, in viewBox px
 const MIN_AREA = 14;    // px², post-projection — roughly two pattern dots
 
 /* Islands that make up "Luzon" for the north-to-south light-up. The mask layer
@@ -192,6 +201,17 @@ const cities = cityKeys.map((key) => {
 });
 const byKey = Object.fromEntries(cities.map((c) => [c.key, c]));
 
+/* Touch targets, sized to the gap. 22px is the comfortable default, but real
+   neighbours are real neighbours: Baguio and Pangasinan are ~40 km apart and a
+   pair of 22px circles over them would overlap, leaving one of the two
+   impossible to hover. Half the distance to the nearest other pin, floored at
+   11px so nothing becomes un-tappable. */
+cities.forEach((c) => {
+  const nearest = Math.min(...cities.filter((o) => o !== c)
+    .map((o) => Math.hypot(o.x - c.x, o.y - c.y)));
+  c.hit = Math.round(Math.max(11, Math.min(22, nearest / 2)));
+});
+
 /* Route arcs bow away from the straight line so two of them leaving the same
    pin stay tellable apart. Sign alternates for the same reason. */
 const routes = (prices.routes || []).map(([a, b], i) => {
@@ -209,17 +229,22 @@ const routes = (prices.routes || []).map(([a, b], i) => {
 const I4  = '\n    ';
 const I14 = '\n              ';
 const I16 = '\n                ';
+const I18 = '\n                  ';
 
 const regions = {
   'index.html': {
+    /* Luzon sits in its own nested <g> so the lit layer can <use> just that
+       group. Nested rather than a second copy of the same paths — the lit
+       overlay is the same geometry, and it is not worth 5 KB to say so twice. */
     'map:islands': islands
+      .filter((isl) => !isl.luzon)
       .map((isl) => `<path d="${isl.d}" />`)
       .join(I16),
 
     'map:luzon': islands
       .filter((isl) => isl.luzon)
-      .map((isl) => `<path d="${isl.d}" fill="url(#dotLuzon)" />`)
-      .join(I14),
+      .map((isl) => `<path d="${isl.d}" />`)
+      .join(I18),
 
     'map:ripple': `<circle cx="${byKey[prices.seed].x}" cy="${byKey[prices.seed].y}" r="0" fill="#fff" data-ripple />`,
 
@@ -227,7 +252,7 @@ const regions = {
 
     'map:pins': cities.map((c) => [
       `<g class="pin" data-pin="${c.key}" role="button" tabindex="0" aria-label="${c.name} prices">`,
-      `  <circle class="pin__hit" cx="${c.x}" cy="${c.y}" r="22" />`,
+      `  <circle class="pin__hit" cx="${c.x}" cy="${c.y}" r="${c.hit}" />`,
       `  <ellipse class="pin__shadow" cx="${c.x}" cy="${r1(c.y + 6)}" rx="${c.r}" ry="${c.r > 7 ? 3 : 2.5}" />`,
       `  <circle class="pin__ring" cx="${c.x}" cy="${c.y}" r="${c.r}" />`,
       `  <circle class="pin__dot" cx="${c.x}" cy="${c.y}" r="${c.r - 2}" />`,
@@ -235,9 +260,11 @@ const regions = {
       `</g>`
     ].join(I14)).join(I14),
 
-    'map:desc': `A dotted outline of the Philippine archipelago with markers on${I14}  ` +
+    /* One line on purpose: the marker sits inline inside <desc>, so anything
+       multi-line comes back out of the splice with ragged indentation. */
+    'map:desc': 'A dotted map of the Philippine archipelago with markers on ' +
       cities.map((c) => c.name).join(', ').replace(/, ([^,]*)$/, ' and $1') +
-      `. Luzon is highlighted first.${I14}  The same prices are listed as text beside the map.`
+      '. Luzon is highlighted first. The same prices are listed as text beside the map.'
   },
 
   'main.js': {
@@ -273,7 +300,7 @@ const regions = {
 function js(v) { return typeof v === 'string' ? `'${v.replace(/'/g, "\\'")}'` : String(v); }
 
 /* ---------------------------------------------------------------------------
-   5. Splice
+   6. Splice
    ------------------------------------------------------------------------- */
 function splice(src, name, body, file) {
   const isJs = file.endsWith('.js');
@@ -287,6 +314,21 @@ function splice(src, name, body, file) {
   const indent = src.slice(lineStart, a).match(/^\s*/)[0];
   return src.slice(0, a + open.length) + '\n' + indent + body + '\n' + indent + src.slice(b);
 }
+
+/* ---------------------------------------------------------------------------
+   5. Sanity check
+
+   The whole point of generating this is that a pin can't end up in the sea.
+   So check: every city has to fall inside the island it is drawn on, tested
+   against the simplified path that actually ships — not the source data.
+   ------------------------------------------------------------------------- */
+const simplified = islands.map((isl) => simplify(isl.pts, SIMPLIFY));
+const offshore = [];
+cities.forEach((c) => {
+  const host = simplified.find((pts) => pointInRing([c.x, c.y], pts));
+  c.onLand = !!host;
+  if (!host) offshore.push(c.key);
+});
 
 const mode = process.argv[2] || '--write';
 let stale = false;
@@ -312,7 +354,17 @@ if (mode !== '--print') {
     `${islands.filter((i) => i.luzon).length} in the Luzon group, ` +
     `${cities.length} cities, scale ${scale.toFixed(1)} px/rad`
   );
-  for (const c of cities) console.error(`  ${c.key.padEnd(8)} ${String(c.lat).padStart(7)}, ${String(c.lng).padStart(8)}  ->  ${c.x}, ${c.y}`);
+  for (const c of cities) {
+    console.error(
+      `  ${c.key.padEnd(11)} ${String(c.lat).padStart(7)}, ${String(c.lng).padStart(8)}` +
+      `  ->  ${String(c.x).padStart(5)}, ${String(c.y).padStart(5)}` +
+      `  ${c.onLand ? 'on land' : 'IN THE SEA'}  hit r${c.hit}`
+    );
+  }
+  if (offshore.length) {
+    console.error(`\n! ${offshore.join(', ')} did not land on any island. Check the lat/lng — ` +
+                  `lng is the ~120-127 one — or raise the coastline detail.`);
+  }
 }
 
-if (stale) process.exit(1);
+if (stale || offshore.length) process.exit(1);

@@ -272,8 +272,11 @@
     var inR   = document.querySelector('[data-hero-in="right"]');
 
     // Same percentage-transform caveat as the scroll reveals — hand GSAP
-    // the offset in units it can cancel before tweening it away.
-    if (lines.length) gsap.set(lines, { y: 0, yPercent: 110 });
+    // the offset in units it can cancel before tweening it away. The travel
+    // is horizontal: every line starts off-stage past the left edge of the
+    // page and slides in to where it belongs. Each line box is as wide as
+    // the copy column, so -135% is off-screen for the short lines too.
+    if (lines.length) gsap.set(lines, { y: 0, yPercent: 0, x: 0, xPercent: -135 });
 
     /* Hand-drawn accents draw themselves on, stroke by stroke, just after
        the line they belong to has landed. Each path is measured so the
@@ -287,15 +290,16 @@
     });
 
     var tl = gsap.timeline({ delay: 0.12 });
-    if (lines.length)   tl.to(lines, { yPercent: 0, duration: 1, stagger: 0.09 }, 0);
-    // Shorter than it reads: there are a dozen doodle strokes now, so the
-    // per-stroke stagger has to stay small or the band is still drawing
-    // itself long after the headline has landed.
+    if (lines.length)   tl.to(lines, { xPercent: 0, duration: 1.1, stagger: 0.09, ease: 'power3.out' }, 0);
+    // The accents stay put and draw themselves on — they mark particular
+    // letters, so they can only start once the line carrying those letters
+    // has arrived. The per-stroke stagger stays small or the last mark is
+    // still drawing itself well after the headline has landed.
     if (strokes.length) tl.to(strokes, {
       strokeDashoffset: 0, duration: 0.55, stagger: 0.05, ease: 'power2.inOut'
-    }, 0.6);
-    if (els.length)     tl.to(els,   { opacity: 1, y: 0, duration: 0.8, stagger: 0.07 }, 0.35);
-    if (fan)            tl.to(fan,   { opacity: 1, y: 0, scale: 1, duration: 1.15 }, 0.2);
+    }, 0.85);
+    if (els.length)     tl.to(els,   { opacity: 1, x: 0, duration: 0.8, stagger: 0.07 }, 0.35);
+    if (fan)            tl.to(fan,   { opacity: 1, x: 0, scale: 1, duration: 1.15 }, 0.2);
     if (zeb)            tl.to(zeb,   { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.7)' }, 0.75);
 
     /* The two back phones come in from their own side of the stage. They
@@ -705,7 +709,7 @@
 
     /* The projection, shared with tools/map/build-map.mjs. */
     /* map:proj:start */
-    var MAP_PROJ = { scale: 2524.2792, offX: -5065.32, offY: 981.19 };
+    var MAP_PROJ = { scale: 2463.4958, offX: -4936.34, offY: 958.4 };
     function project(lat, lng) {
       var x = lng * Math.PI / 180 * MAP_PROJ.scale + MAP_PROJ.offX;
       var y = -Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) * MAP_PROJ.scale + MAP_PROJ.offY;
@@ -718,14 +722,16 @@
     /* map:fallback:start */
     var FALLBACK = {
       source: 'sample', seed: 'manila',
-      order: ['manila', 'baguio', 'cebu', 'iloilo', 'naga', 'davao'],
+      order: ['manila', 'baguio', 'pangasinan', 'tarlac', 'zambales', 'vigan', 'tuguegarao', 'naga'],
       cities: {
         manila: { name: 'Metro Manila', lat: 14.5995, lng: 120.9842, hub: true, rice: 48, eggs: 9, chicken: 195, updated: 12, conf: 94, n: 1240 },
         baguio: { name: 'Baguio', lat: 16.4023, lng: 120.596, rice: 52, eggs: 8, chicken: 205, updated: 6, conf: 87, n: 410 },
-        naga: { name: 'Naga', lat: 13.6218, lng: 123.1948, rice: 46, eggs: 8, chicken: 188, updated: 24, conf: 78, n: 210 },
-        iloilo: { name: 'Iloilo', lat: 10.7202, lng: 122.5621, rice: 45, eggs: 8, chicken: 182, updated: 17, conf: 81, n: 305 },
-        cebu: { name: 'Cebu', lat: 10.3157, lng: 123.8854, rice: 49, eggs: 9, chicken: 198, updated: 9, conf: 85, n: 520 },
-        davao: { name: 'Davao', lat: 7.0731, lng: 125.6128, rice: 44, eggs: 7, chicken: 176, updated: 31, conf: 73, n: 190 }
+        pangasinan: { name: 'Pangasinan', lat: 16.0219, lng: 120.2317, rice: 43, eggs: 8, chicken: 181, updated: 38, conf: 71, n: 168 },
+        vigan: { name: 'Vigan', lat: 17.5747, lng: 120.3869, rice: 47, eggs: 8, chicken: 190, updated: 52, conf: 64, n: 96 },
+        tuguegarao: { name: 'Tuguegarao', lat: 17.6132, lng: 121.727, rice: 42, eggs: 7, chicken: 179, updated: 63, conf: 61, n: 84 },
+        tarlac: { name: 'Tarlac', lat: 15.4802, lng: 120.5979, rice: 44, eggs: 8, chicken: 186, updated: 27, conf: 74, n: 205 },
+        zambales: { name: 'Zambales', lat: 15.3276, lng: 119.9787, rice: 46, eggs: 9, chicken: 192, updated: 44, conf: 66, n: 112 },
+        naga: { name: 'Naga', lat: 13.6218, lng: 123.1948, rice: 46, eggs: 8, chicken: 188, updated: 24, conf: 78, n: 210 }
       }
     };
     /* map:fallback:end */
@@ -941,14 +947,22 @@
       });
       if (wipe) tl.to(wipe, { attr: { height: 800 }, duration: 1.3, ease: 'power2.inOut' }, 0);
       if (links.length) tl.to(links, { strokeDashoffset: 0, duration: 1.2, stagger: 0.12, ease: 'power2.out' }, 0.4);
+      /* Scale the marks, never the <g>.
+         A group scaled about an svgOrigin keeps a residual translate the size
+         of its own bounding box — and the box includes the pin's label, so a
+         wide name ("Pangasinan") shifted its pin ~75 units west, into the
+         South China Sea. The dot, ring and shadow each carry
+         `transform-box: fill-box`, so they scale about themselves and the
+         label's width stops mattering. clearProps hands the element back to
+         the stylesheet afterwards, which is what drives the active pulse. */
       pins.forEach(function (pin, idx) {
-        var key = pin.getAttribute('data-pin');
-        var c = CITIES[key];
-        tl.fromTo(pin,
-          { opacity: 0, scale: 0 },
-          { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(2.2)',
-            svgOrigin: c ? (c.x + ' ' + c.y) : '300 400' },
-          0.7 + idx * 0.09);
+        var marks = pin.querySelectorAll('.pin__dot, .pin__ring, .pin__shadow');
+        var at = 0.7 + idx * 0.09;
+        tl.fromTo(pin, { opacity: 0 }, { opacity: 1, duration: 0.35 }, at);
+        tl.fromTo(marks,
+          { scale: 0 },
+          { scale: 1, duration: 0.6, ease: 'back.out(2.2)', clearProps: 'transform' },
+          at);
       });
       // The seed call above already set the first city, so clear the guard
       // to let the first ripple actually fire as the section arrives.
