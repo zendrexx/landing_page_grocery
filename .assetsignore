@@ -25,5 +25,9 @@ assets/zeb/zeb-budget.png
 assets/zeb/zeb-mealplan.png
 assets/zeb/zebite logo.png
 
+# Design reference material. The mp4 in here is ~40 MB — well over Cloudflare's
+# 25 MiB per-asset limit, so leaving it unnamed fails the deploy outright.
+assets/want
+
 # Repo docs
 README.md

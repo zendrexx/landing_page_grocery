@@ -1,16 +1,46 @@
 /* =====================================================================
-   AI Grocery Planner — landing page styles
+   Zebite — landing page styles
    Brand system mirrors the Flutter app (fresh-market): cream identity,
    forest-green bands, a single lime accent, Plus Jakarta Sans.
 
-   Design principles (senior pass):
-   • Light only — one warm cream identity. (The phones inside the bezels do
-     have a dark mode: see the --shot-* tokens and .shot-toggle.)
-   • Flat by default — structure comes from borders and background steps,
-     not from stacked drop-shadows. Shadow is reserved for the phone
-     devices and the one primary button, where lift is meaningful.
-   • Fewer decorative glows/grain — let the product screenshots carry it.
+   Design principles:
+   • Light only — one warm cream identity, deepened. (The phones inside the
+     bezels do have a dark mode: see the --shot-* tokens and .shot-toggle.)
+   • Depth, not decoration — the page sits on a recessed --ground and the
+     content floats above it on a disciplined three-step elevation scale.
+     Glass and glow are structural cues, never ornament: they mark what is
+     lifted, live, or focused.
+   • Motion carries the hierarchy — entrances say "this is new", scrub says
+     "this is behind", and every one of them is off under reduced motion.
+   • The product screenshots are still the hero. Everything here frames
+     them; nothing competes with them.
    ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   0. Fonts — self-hosted variable Plus Jakarta Sans (weights 500–800).
+   Two subsets: latin, plus latin-ext for the peso sign (₱ = U+20B1, which
+   falls in latin-ext's U+20AD-20C0 range — it is all over this page).
+   ------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500 800;
+  font-display: swap;
+  src: url('assets/fonts/plus-jakarta-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+                 U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+                 U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500 800;
+  font-display: swap;
+  src: url('assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+                 U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* ---------------------------------------------------------------------
    1. Design tokens
@@ -60,9 +90,36 @@
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 26px;
+  --r-2xl: 34px;
+  --r-3xl: 44px;
 
-  /* Shadow — used sparingly. Devices and the primary CTA only. */
+  /* Depth ------------------------------------------------------------
+     --ground is one step below --bg, so panels laid on it read as
+     genuinely lifted rather than merely outlined. Every shadow is tinted
+     with the forest green rather than neutral black — a grey shadow on a
+     warm cream ground is the classic "web template" tell. */
+  --ground:   #E7E4D8;
+  --elev-1: 0 1px 2px rgba(13,46,33,0.04), 0 8px 24px -12px rgba(13,46,33,0.10);
+  --elev-2: 0 2px 4px rgba(13,46,33,0.05), 0 18px 46px -20px rgba(13,46,33,0.20);
+  --elev-3: 0 4px 8px rgba(13,46,33,0.06), 0 40px 80px -36px rgba(13,46,33,0.34);
   --shadow-device: 0 26px 50px -30px rgba(13, 46, 33, 0.45);
+
+  /* Glow — lime for "live/active", forest for lifting off dark bands */
+  --glow-lime:   0 0 0 1px rgba(155,203,52,0.22), 0 12px 48px -12px rgba(181,227,77,0.55);
+  --glow-forest: 0 24px 80px -30px rgba(13,46,33,0.55);
+
+  /* Glass */
+  --glass:        rgba(255,255,255,0.62);
+  --glass-2:      rgba(255,255,255,0.78);
+  --glass-border: rgba(255,255,255,0.72);
+  --glass-blur:   18px;
+  /* on-forest glass */
+  --glass-dark:        rgba(255,255,255,0.08);
+  --glass-dark-border: rgba(255,255,255,0.16);
+
+  /* Soft washes — the layered background gradients */
+  --wash-lime:   radial-gradient(60% 60% at 50% 40%, rgba(181,227,77,0.30), transparent 70%);
+  --wash-forest: radial-gradient(60% 60% at 50% 50%, rgba(27,92,65,0.16),  transparent 70%);
 
   /* Layout */
   --maxw: 1200px;
@@ -70,6 +127,11 @@
 
   /* Motion */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 0.18s;
+  --dur-base: 0.42s;
+  --dur-slow: 0.8s;
 
   /* Screenshot theme — the page stays cream, but the phones inside the
      bezels show the app's real light or dark build. Defaults to the
@@ -120,7 +182,13 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
 ul, ol { list-style: none; padding: 0; }
 
-h1, h2, h3, h4 { line-height: 1.08; letter-spacing: -0.03em; font-weight: 800; }
+h1, h2, h3, h4 {
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+p, li { text-wrap: pretty; }
 
 :focus-visible {
   outline: 3px solid var(--lime-ring);
@@ -132,19 +200,109 @@ h1, h2, h3, h4 { line-height: 1.08; letter-spacing: -0.03em; font-weight: 800; }
 
 /* ---------------------------------------------------------------------
    3. Motion / reveal utilities
+   The entrance states live in CSS so that content is hidden *only* when
+   JS is going to arrive and animate it in. `.js` is set on <html> by an
+   inline script in the head, so with JS off (or if main.js fails) nothing
+   is ever stuck at opacity 0 — the page just renders, complete.
    ------------------------------------------------------------------- */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-  transition-delay: var(--delay, 0ms);
-  will-change: opacity, transform;
+/* No will-change here on purpose: hundreds of permanently promoted layers
+   costs more than it saves. GSAP promotes each element for the duration of
+   its own tween and releases it again. */
+/* Only opacity and transform here. Blur is applied by GSAP via fromTo
+   instead: a CSS `filter` in the resting state survives clearProps and
+   silently reasserts itself the moment the tween finishes cleaning up. */
+.js [data-anim="fade"]     { opacity: 0; }
+.js [data-anim="fade-up"]  { opacity: 0; transform: translateY(28px); }
+.js [data-anim="fade-in-l"]{ opacity: 0; transform: translateX(-28px); }
+.js [data-anim="fade-in-r"]{ opacity: 0; transform: translateX(28px); }
+.js [data-anim="scale-in"] { opacity: 0; transform: scale(0.94); }
+.js [data-anim="blur-in"]  { opacity: 0; transform: scale(0.97); }
+
+/* Line-mask reveal for headings. Authored as spans in the markup rather
+   than split at runtime, so the text stays intact for screen readers,
+   find-in-page and copy/paste. Lines — never characters: per-character
+   reveals are the clearest "generated by a machine" tell there is. */
+.lines { display: block; }
+.lines .line { display: block; overflow: hidden; padding-bottom: 0.18em; margin-bottom: -0.18em; }
+.lines .line > span { display: block; }
+.js .lines .line > span { transform: translateY(110%); }
+.lines em { font-style: normal; }
+
+/* Hero load choreography — these are driven by a timeline on load rather
+   than by scroll, so they get their own hooks. */
+.js [data-hero-el]  { opacity: 0; transform: translateY(22px); }
+.js [data-hero-fan] { opacity: 0; transform: translateY(30px) scale(0.94); }
+.js [data-hero-zeb] { opacity: 0; transform: translateY(18px) scale(0.9); }
+
+/* The two back phones start off-stage on their own side and fly in. Stated
+   here as well as in the timeline so there is no frame where they sit in
+   place before GSAP has taken them over. */
+.js [data-hero-in="left"]  { opacity: 0; transform: translateX(-170%); }
+.js [data-hero-in="right"] { opacity: 0; transform: translateX(170%); }
+
+/* Price cards rise out of depth as the map section arrives. */
+.js [data-price-card] { opacity: 0; transform: translateY(24px) scale(0.9); }
+
+/* The single switch that turns the whole entrance layer off — set by
+   main.js when reduced motion is requested or GSAP failed to load. From
+   here the page is simply, immediately, all there. */
+.motion-off [data-anim],
+.motion-off [data-hero-el],
+.motion-off [data-hero-fan],
+.motion-off [data-hero-in],
+.motion-off [data-hero-zeb],
+.motion-off [data-price-card],
+.motion-off .lines .line > span {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
 }
-[data-reveal].is-visible { opacity: 1; transform: none; }
+.motion-off .fan__slot .device { animation: none !important; }
+.motion-off .nav__progress,
+.motion-off .steps__thread { transform: scaleX(1); }
+.motion-off .confidence__fill { transform: scaleX(0.94); }
+
+/* Lenis owns the scroll while it is running. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* Glass. Falls back to a solid surface anywhere backdrop-filter is absent
+   — a translucent panel with no blur behind it is unreadable, not subtle. */
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--glass);
+    border-color: var(--glass-border);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+            backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  }
+}
+
+/* Some people ask the OS for less see-through UI. Honour it. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+    -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .js [data-anim],
+  .js .lines .line > span {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    will-change: auto !important;
+  }
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
 }
 
@@ -158,9 +316,32 @@ h1, h2, h3, h4 { line-height: 1.08; letter-spacing: -0.03em; font-weight: 800; }
   padding-inline: var(--gutter);
 }
 
-.section { padding-block: clamp(60px, 8vw, 108px); }
+.section { padding-block: clamp(72px, 9vw, 128px); position: relative; }
 .section--tight { padding-block: clamp(44px, 6vw, 76px); }
-.section--soft { background: var(--bg-soft); }
+.section--soft {
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(255,255,255,0.9), transparent 70%),
+    var(--bg-soft);
+}
+
+/* Note: `content-visibility: auto` was tried on the below-fold sections
+   and deliberately removed. An unrendered section reports its
+   contain-intrinsic-size placeholder rather than its real height, so every
+   ScrollTrigger start/end below it is computed against the wrong page
+   length until that section happens to render. On a page whose whole
+   structure is scroll-driven that trade is not worth the saved paint —
+   and the real weight here (screenshots) is already lazy-loaded. */
+
+/* Page atmosphere: two very soft washes fixed behind the whole document.
+   Fixed rather than scrolled, so it behaves like light in the room rather
+   than a texture glued to the page. */
+.page-bg {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(50% 40% at 85% 8%,  rgba(181,227,77,0.20), transparent 70%),
+    radial-gradient(45% 40% at 10% 55%, rgba(27,92,65,0.09),  transparent 70%),
+    radial-gradient(60% 45% at 50% 100%, rgba(181,227,77,0.10), transparent 70%);
+}
 
 .section-head { max-width: 720px; margin-bottom: clamp(34px, 5vw, 56px); }
 .section-head--center { margin-inline: auto; text-align: center; }
@@ -196,38 +377,38 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 
 .lime-text { color: var(--lime-deep); }
 
-/* Triad chip: HAVE -> WANT -> BUDGET spine */
-.triad {
-  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px;
-  font-weight: 700; letter-spacing: -0.01em;
-}
-.triad .arrow { color: var(--fg-subtle); font-weight: 800; }
-.triad .k {
-  padding: 3px 12px; border-radius: 8px;
-  background: rgba(155, 203, 52, 0.16);
-  color: #3d5c12; border: 1px solid rgba(155, 203, 52, 0.45);
-}
-
 /* ---------------------------------------------------------------------
    5. Buttons & badges
    ------------------------------------------------------------------- */
 .btn {
+  position: relative;
   display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   padding: 14px 24px;
   border-radius: 999px;
   font-weight: 700; font-size: 1rem; letter-spacing: -0.01em;
-  transition: transform 0.16s var(--ease), background 0.16s var(--ease), border-color 0.16s var(--ease);
+  transition: background 0.16s var(--ease), border-color 0.16s var(--ease),
+              box-shadow 0.3s var(--ease), color 0.16s var(--ease);
   white-space: nowrap;
+  /* JS writes --mx/--my for the magnetic pull. They are declared here and
+     kept unitless (multiplied into px by calc) so GSAP's quickTo can
+     interpolate them as plain numbers — animating a custom property that
+     carries its own units is far less reliable across browsers. */
+  --mx: 0; --my: 0;
+  transform: translate3d(calc(var(--mx) * 1px), calc(var(--my) * 1px), 0);
 }
-.btn svg { width: 18px; height: 18px; }
-.btn:active { transform: translateY(1px); }
+.btn svg { width: 18px; height: 18px; transition: transform 0.3s var(--ease-out-expo); }
+.btn:active { --my: 1; }
+.btn--primary:hover svg { transform: translateX(3px); }
 
 /* The single place shadow is allowed on UI chrome — the primary action. */
 .btn--primary {
   background: var(--lime); color: var(--on-lime);
   box-shadow: 0 6px 16px -8px rgba(120, 170, 30, 0.6);
 }
-.btn--primary:hover { transform: translateY(-2px); background: #C0EA5C; }
+.btn--primary:hover {
+  background: #C0EA5C;
+  box-shadow: var(--glow-lime);
+}
 
 .btn--ghost {
   background: transparent; color: var(--fg);
@@ -261,12 +442,22 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 /* ---------------------------------------------------------------------
    6. Forest bands (calm — subtle grid, no grain)
    ------------------------------------------------------------------- */
+/* The dark bands are the page's punctuation. Framing them as inset rounded
+   panels — ground visible down both sides — is what turns a flat colour
+   block into something that reads as lifted off the page. */
 .forest {
   position: relative;
   color: var(--on-forest);
   background: linear-gradient(150deg, var(--grad-a) 0%, var(--grad-b) 55%, var(--grad-c) 100%);
   isolation: isolate;
   overflow: hidden;
+}
+@media (min-width: 900px) {
+  .forest {
+    margin-inline: clamp(16px, 3vw, 34px);
+    border-radius: var(--r-3xl);
+    box-shadow: var(--glow-forest);
+  }
 }
 .forest .grid-tex {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -276,9 +467,24 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   background-size: 72px 72px;
   -webkit-mask-image: radial-gradient(100% 90% at 50% 0%, #000 0%, transparent 90%);
           mask-image: radial-gradient(100% 90% at 50% 0%, #000 0%, transparent 90%);
+  will-change: transform;
 }
-/* grain retained as a hook but disabled — kept empty so HTML needn't change */
-.grain { display: none; }
+/* An aurora that drifts very slowly across the dark bands. Two blurred
+   radial blobs on one long transform loop — no repaint, just compositing. */
+.grain {
+  display: block;
+  position: absolute; inset: -30%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(28% 34% at 30% 40%, rgba(181,227,77,0.20), transparent 70%),
+    radial-gradient(26% 30% at 72% 62%, rgba(46,158,91,0.24), transparent 70%);
+  filter: blur(40px);
+  animation: aurora 26s ease-in-out infinite alternate;
+}
+@keyframes aurora {
+  0%   { transform: translate3d(-3%, -2%, 0) scale(1); }
+  50%  { transform: translate3d( 4%,  3%, 0) scale(1.12); }
+  100% { transform: translate3d(-2%,  4%, 0) scale(1.04); }
+}
 .forest .eyebrow { color: var(--on-forest-mut); }
 .forest .eyebrow::before { background: var(--lime); }
 .forest .lead { color: var(--on-forest-mut); }
@@ -288,16 +494,38 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
    ------------------------------------------------------------------- */
 .nav {
   position: sticky; top: 0; z-index: 100;
-  transition: background 0.3s var(--ease), border-color 0.3s var(--ease);
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease),
+              transform 0.4s var(--ease-out-expo), box-shadow 0.3s var(--ease);
   border-bottom: 1px solid transparent;
 }
 .nav.is-stuck {
   background: var(--bg);
-  background: color-mix(in srgb, var(--bg) 85%, transparent);
-  -webkit-backdrop-filter: blur(14px);
-          backdrop-filter: blur(14px);
-  border-bottom-color: var(--border);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.8);
+          backdrop-filter: blur(18px) saturate(1.8);
+  border-bottom-color: var(--border-2);
+  box-shadow: 0 10px 30px -24px rgba(13,46,33,0.6);
 }
+/* Scrolling down hides the bar, scrolling up brings it straight back —
+   the content gets the full viewport, the nav is never more than a flick
+   away. Suppressed while the mobile panel is open. */
+.nav.is-hidden:not(.is-open) { transform: translateY(-100%); }
+
+@media (prefers-reduced-transparency: reduce) {
+  .nav.is-stuck { background: var(--bg); }
+}
+
+/* Reading progress — a lime hairline across the bottom edge of the bar.
+   Driven by scaleX so it never touches layout. */
+.nav__progress {
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+  background: linear-gradient(90deg, var(--lime-deep), var(--lime));
+  transform: scaleX(0); transform-origin: 0 50%;
+  opacity: 0; transition: opacity 0.3s var(--ease);
+  pointer-events: none;
+}
+.nav.is-stuck .nav__progress { opacity: 1; }
+
 .nav__inner {
   display: flex; align-items: center; justify-content: space-between;
   gap: 20px; height: 72px;
@@ -310,12 +538,23 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   text-transform: uppercase; color: var(--fg-subtle); margin-top: -3px;
 }
 
-.nav__links { display: none; align-items: center; gap: 4px; }
+/* The active pill is one element that slides between links, rather than a
+   background toggled per link — the travel is what communicates "you moved
+   from there to here". */
+.nav__links { display: none; align-items: center; gap: 4px; position: relative; }
 .nav__links a {
+  position: relative; z-index: 1;
   padding: 9px 14px; border-radius: 999px; font-weight: 600; font-size: 0.95rem;
-  color: var(--fg-muted); transition: color 0.15s var(--ease), background 0.15s var(--ease);
+  color: var(--fg-muted); transition: color 0.2s var(--ease);
 }
-.nav__links a:hover { color: var(--fg); background: var(--border-2); }
+.nav__links a:hover { color: var(--fg); }
+.nav__links a.is-current { color: var(--fg); }
+.nav__ind {
+  position: absolute; z-index: 0; left: 0; top: 0; height: 100%;
+  border-radius: 999px; background: var(--border-2);
+  opacity: 0; pointer-events: none;
+  transform-origin: 0 50%;
+}
 
 .nav__cta { display: none; align-items: center; gap: 10px; }
 
@@ -356,6 +595,13 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
    8. Hero
    ------------------------------------------------------------------- */
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--border-2); }
+/* A wide lime bloom sitting behind the phone fan — the single light source
+   the whole hero is lit by. */
+.hero::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  right: -10%; top: -18%; width: 78%; height: 118%;
+  background: var(--wash-lime);
+}
 .hero__inner {
   display: grid; gap: clamp(36px, 5vw, 56px);
   padding-block: clamp(40px, 6vw, 72px) clamp(52px, 7vw, 88px);
@@ -371,27 +617,56 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 .hero__pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 4px rgba(46,158,91,0.16); }
 .hero__pill b { color: var(--fg); font-weight: 700; }
 
+/* The headline carries the hero almost on its own, so it runs a lot larger
+   than the body scale and everything else stays deliberately quiet. */
 .hero h1 {
-  font-size: clamp(2.5rem, 6.2vw, 4.2rem);
-  letter-spacing: -0.045em;
+  position: relative;
+  font-size: clamp(3.1rem, 8.2vw, 6.2rem);
+  letter-spacing: -0.055em;
+  line-height: 0.98;
   font-weight: 800;
 }
 .hero h1 .lime-text { display: block; }
+
+/* Hand-drawn accents */
+
+/* The doodle band above the headline. It sits in normal flow — an absolute
+   one would ride up into the nav whenever the viewport got short — and
+   pulls itself back down onto the first line with a negative margin. */
+.hero__doodles {
+  display: block;
+  width: min(62%, 320px); height: auto;
+  margin: 0 0 clamp(-22px, -1.6vw, -8px) -6px;
+  overflow: visible;
+  pointer-events: none;
+}
+@media (max-width: 620px) { .hero__doodles { width: min(78%, 240px); } }
+
+.hero__scribble {
+  display: block;
+  width: min(96%, 480px); height: auto;
+  margin-top: -0.12em;
+  overflow: visible;
+}
+/* Sits inside the h1 (which is position:relative) so it tracks the headline
+   rather than the section — it belongs to the first line, not the page. */
+.hero__spark {
+  position: absolute;
+  top: -0.34em; left: 63%;
+  width: clamp(52px, 6vw, 86px); height: auto;
+  pointer-events: none;
+}
+@media (max-width: 959px) { .hero__spark { display: none; } }
+
 .hero__sub {
-  margin-top: 20px; max-width: 34ch;
-  font-size: clamp(1.06rem, 1.6vw, 1.28rem);
+  margin-top: 26px; max-width: 42ch;
+  font-size: clamp(1rem, 1.25vw, 1.12rem);
   color: var(--fg-muted); font-weight: 500;
+  line-height: 1.6;
 }
 .hero__sub b { color: var(--fg); font-weight: 700; }
-.hero__actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-.hero__badges { margin-top: 22px; }
-.hero__trust {
-  margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border);
-  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px;
-  font-size: 0.85rem; color: var(--fg-subtle); font-weight: 600;
-}
-.hero__trust .stack { display: inline-flex; align-items: center; gap: 8px; }
-.hero__trust .stack::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--lime-deep); }
+.hero__actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.btn--lg { padding: 17px 34px; font-size: 1.05rem; }
 
 /* Waitlist form */
 .waitlist { margin-top: 26px; max-width: 460px; }
@@ -459,16 +734,80 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   width: 32cqw; height: 1.1cqw; border-radius: 999px; background: var(--shot-ind); z-index: 3;
 }
 
-/* Hero phone fan */
+/* ---------------------------------------------------------------------
+   9b. Hero stage — three fanned phones, with clouds drifting past
+   ------------------------------------------------------------------- */
 .hero__visual { position: relative; }
-.fan {
-  position: relative; width: 100%; max-width: 500px;
-  margin-inline: auto; aspect-ratio: 1 / 1.16;
+.hero__stage {
+  position: relative;
+  width: 100%; max-width: 500px;
+  margin-inline: auto;
+  aspect-ratio: 1 / 1.16;
 }
-.fan .device { position: absolute; top: 0; will-change: transform; }
-.fan .fan-home   { width: 60%; left: 20%; top: 4%; z-index: 3; }
-.fan .fan-zeb    { width: 52%; left: 46%; top: 13%; z-index: 1; transform: rotate(6.5deg); transform-origin: bottom center; }
-.fan .fan-pantry { width: 52%; left: 2%;  top: 13%; z-index: 1; transform: rotate(-6.5deg); transform-origin: bottom center; }
+
+/* Home in front, Pantry and Ask Zeb angled behind it. The slot carries the
+   position plus anything scripted (entrance, pointer parallax, scroll
+   depth); the device inside carries the resting angle plus the sway. Split
+   that way, the CSS animation and the GSAP tweens each own a transform of
+   their own and never overwrite each other. */
+.fan { position: absolute; inset: 0; z-index: 2; }
+.fan__slot { position: absolute; top: 0; will-change: transform; }
+.fan__slot--front { width: 60%; left: 20%; top: 4%;  z-index: 3; }
+.fan__slot--right { width: 52%; left: 46%; top: 13%; z-index: 1; }
+.fan__slot--left  { width: 52%; left: 2%;  top: 13%; z-index: 1; }
+
+.fan__slot .device { transform-origin: 50% 100%; }
+
+/* The sway. Three different periods, none of them a multiple of another,
+   so the group never falls into step and starts reading as a machine.
+   Each starts on its resting angle, so the delay before it kicks in is
+   simply the phone sitting still where the entrance left it. */
+.fan__slot--left  .device { transform: rotate(-6.5deg); animation: sway-left  7s   ease-in-out 1.2s  infinite; }
+.fan__slot--right .device { transform: rotate(6.5deg);  animation: sway-right 8.4s ease-in-out 1.35s infinite; }
+.fan__slot--front .device { animation: sway-front 9.6s ease-in-out 1.5s infinite; }
+
+@keyframes sway-left {
+  0%, 100% { transform: rotate(-6.5deg) translate3d(0, 0, 0); }
+  50%      { transform: rotate(-9.2deg) translate3d(-6px, -10px, 0); }
+}
+@keyframes sway-right {
+  0%, 100% { transform: rotate(6.5deg) translate3d(0, 0, 0); }
+  50%      { transform: rotate(9.2deg) translate3d(6px, -10px, 0); }
+}
+@keyframes sway-front {
+  0%, 100% { transform: rotate(0deg) translate3d(0, 0, 0); }
+  50%      { transform: rotate(-1.6deg) translate3d(0, -7px, 0); }
+}
+
+/* Clouds — three-lobed blobs on long, offset drifts. Pure transform, so
+   they cost a composite and nothing else. */
+.clouds { position: absolute; inset: -6% -12%; z-index: 0; pointer-events: none; }
+.cloud {
+  position: absolute;
+  background: #fff;
+  border-radius: 999px;
+  opacity: 0.9;
+  filter: drop-shadow(0 8px 18px rgba(13, 46, 33, 0.07));
+}
+.cloud::before, .cloud::after {
+  content: ""; position: absolute; background: inherit; border-radius: 999px;
+}
+.cloud::before { width: 58%; height: 155%; left: 12%; top: -62%; }
+.cloud::after  { width: 42%; height: 125%; right: 12%; top: -38%; }
+
+.cloud--1 { width: 96px;  height: 26px; top: 12%; left: -4%;  animation: drift 26s ease-in-out infinite; }
+.cloud--2 { width: 68px;  height: 20px; top: 32%; right: -2%; opacity: 0.75; animation: drift 34s ease-in-out infinite reverse; }
+.cloud--3 { width: 116px; height: 30px; top: 63%; left: -10%; opacity: 0.62; animation: drift 30s ease-in-out infinite 1.5s; }
+.cloud--4 { width: 78px;  height: 22px; top: 82%; right: 2%;  opacity: 0.8;  animation: drift 38s ease-in-out infinite reverse 0.8s; }
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(26px, -14px, 0); }
+}
+
+@media (max-width: 620px) {
+  .cloud--3, .cloud--4 { display: none; }
+}
 
 .phone-wrap { display: flex; justify-content: center; }
 .phone-wrap .device { max-width: 300px; }
@@ -482,8 +821,221 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   font-size: 0.82rem; letter-spacing: 0.04em;
 }
 
+/* =====================================================================
+   10b. Price intelligence — the Philippines map
+   A dot-matrix archipelago. The dotted texture comes from a <pattern>
+   fill rather than thousands of <circle> elements: six island paths at
+   ~4 KB instead of 2,000+ nodes the compositor has to carry on every
+   frame. Islands stay separate <g>s so Luzon can be lit on its own.
+   ===================================================================== */
+.prices { position: relative; overflow: hidden; }
+.prices::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  left: 4%; top: 2%; width: 62%; height: 86%;
+  background: radial-gradient(58% 58% at 50% 45%, rgba(181,227,77,0.34), transparent 70%);
+}
+
+.prices__inner {
+  display: grid; gap: clamp(40px, 5vw, 64px); align-items: center;
+}
+@media (min-width: 960px) {
+  .prices__inner { grid-template-columns: 1.15fr 1fr; }
+}
+
+/* --- The map stage ---------------------------------------------------
+   Everything is positioned in percentages against this box so the SVG,
+   the pins and the HTML price cards stay locked together at any width. */
+.map-stage {
+  position: relative;
+  width: 100%; max-width: 560px; margin-inline: auto;
+  aspect-ratio: 3 / 4;
+}
+.map-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+/* The lit overlay is the same island geometry drawn again in bright lime,
+   then revealed through an expanding mask — that is the ripple. Animating
+   one mask circle beats animating a few hundred dots. Starts invisible so
+   nothing flashes before the first contribution lands. */
+.map-glow { opacity: 0; filter: drop-shadow(0 0 10px rgba(181,227,77,0.85)); }
+
+/* Arcs between contributing cities */
+.map-link {
+  fill: none; stroke: url(#linkGrad); stroke-width: 1.6; stroke-linecap: round;
+  opacity: 0.55;
+}
+.map-link-pulse { fill: var(--lime); opacity: 0; }
+
+/* --- Pins ------------------------------------------------------------ */
+.pin { cursor: pointer; }
+.pin__hit { fill: transparent; }          /* 22px touch target */
+.pin__shadow { fill: rgba(13,46,33,0.18); }
+.pin__ring {
+  fill: none; stroke: var(--lime-deep); stroke-width: 1.6;
+  transform-box: fill-box; transform-origin: center;
+  opacity: 0;
+}
+.pin__dot {
+  fill: var(--lime-deep); stroke: #fff; stroke-width: 2;
+  transform-box: fill-box; transform-origin: center;
+  transition: fill 0.3s var(--ease);
+}
+.pin.is-active .pin__dot { fill: var(--lime); }
+/* paint-order puts the stroke behind the fill, giving each label a cream
+   halo so it stays legible where it crosses the dot field. */
+.pin__label {
+  font-size: 11px; font-weight: 700; fill: var(--fg-muted);
+  letter-spacing: 0.01em;
+  paint-order: stroke fill;
+  stroke: var(--bg); stroke-width: 3.5px; stroke-linejoin: round;
+  transition: fill 0.3s var(--ease), opacity 0.3s var(--ease);
+  opacity: 0.85;
+}
+.pin.is-active .pin__label { fill: var(--fg); opacity: 1; }
+.pin:focus-visible { outline: none; }
+.pin:focus-visible .pin__dot { stroke: var(--lime-deep); stroke-width: 3.5; }
+
+/* Only the active pin pulses. A map where every pin throbs at once reads
+   as decoration; one pulsing pin reads as "this is the live one". */
+.pin.is-active .pin__ring { animation: pin-pulse 2.2s ease-out infinite; }
+@keyframes pin-pulse {
+  0%        { transform: scale(0.6); opacity: 0.85; }
+  70%, 100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* --- Floating price cards -------------------------------------------
+   Deliberately HTML rather than SVG: real font rendering, real
+   backdrop-filter, real shadows. */
+.price-card {
+  position: absolute;
+  display: grid; gap: 1px;
+  padding: 11px 15px;
+  border-radius: var(--r-md);
+  box-shadow: var(--elev-2);
+  min-width: 116px;
+  pointer-events: auto;
+  transition: transform 0.28s var(--ease-out-expo), box-shadow 0.28s var(--ease);
+}
+.price-card:hover { transform: translateY(-4px) !important; box-shadow: var(--elev-3); }
+.price-card__k {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--fg-subtle);
+}
+.price-card__v {
+  font-size: 1.18rem; font-weight: 800; letter-spacing: -0.03em; color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.price-card__v small { font-size: 0.72em; font-weight: 700; color: var(--fg-muted); letter-spacing: -0.01em; }
+.price-card__meta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.74rem; font-weight: 600; color: var(--success);
+}
+.price-card__meta .live {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--success);
+  box-shadow: 0 0 0 3px rgba(46,158,91,0.18);
+  animation: live-blink 2.4s ease-in-out infinite;
+}
+@keyframes live-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* Hand-placed so they sit in the sea, never over the islands. */
+.price-card--rice   { top:  6%; right: -4%; }
+.price-card--eggs   { top: 30%; left:  -6%; }
+.price-card--meat   { top: 52%; right: -6%; }
+.price-card--veg    { bottom: 8%; left: -2%; }
+
+@media (max-width: 620px) {
+  .price-card { padding: 8px 11px; min-width: 92px; border-radius: var(--r-sm); }
+  .price-card__v { font-size: 0.98rem; }
+  .price-card__k { font-size: 0.62rem; }
+  .price-card__meta { font-size: 0.66rem; }
+  .price-card--rice { right: -2%; }
+  .price-card--eggs { left: -3%; }
+  .price-card--meat { right: -3%; }
+  .price-card--veg  { left: 0; }
+}
+
+/* --- Copy column ----------------------------------------------------- */
+.prices__points { margin-top: 30px; display: grid; gap: 22px; }
+.prices__point { display: flex; gap: 15px; align-items: flex-start; }
+.prices__point-ico {
+  flex: none; width: 38px; height: 38px; border-radius: 11px;
+  display: grid; place-items: center;
+  background: rgba(155, 203, 52, 0.16);
+  border: 1px solid rgba(155, 203, 52, 0.4);
+  color: #3d5c12;
+}
+.prices__point-ico svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2; }
+.prices__point h3 { font-size: 1.04rem; letter-spacing: -0.02em; }
+.prices__point p { margin-top: 5px; color: var(--fg-muted); font-size: 0.96rem; max-width: 46ch; }
+
+/* --- Confidence widget ----------------------------------------------- */
+.confidence {
+  margin-top: 30px;
+  border-radius: var(--r-lg);
+  padding: 20px 22px;
+  box-shadow: var(--elev-1);
+}
+.confidence__top {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+.confidence__label {
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--fg-subtle);
+}
+.confidence__place {
+  display: block; margin-top: 3px;
+  font-size: 1.02rem; font-weight: 800; letter-spacing: -0.02em; color: var(--fg);
+}
+.confidence__pct {
+  font-size: 1.9rem; font-weight: 800; letter-spacing: -0.04em;
+  color: var(--grad-c); font-variant-numeric: tabular-nums;
+}
+.confidence__bar {
+  margin-top: 14px; height: 7px; border-radius: 999px;
+  background: rgba(22,26,23,0.09); overflow: hidden;
+}
+.confidence__fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--success), var(--lime));
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+.confidence__foot {
+  margin-top: 12px; display: flex; align-items: center; gap: 8px;
+  font-size: 0.84rem; color: var(--fg-muted); font-weight: 600;
+}
+.confidence__foot b { color: var(--fg); font-variant-numeric: tabular-nums; }
+/* Stacked contributor avatars — anonymous by design, so they are initials
+   on a gradient, never faces. */
+.contribs { display: inline-flex; align-items: center; }
+.contribs span {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 0.6rem; font-weight: 800; color: #fff;
+  background: linear-gradient(150deg, var(--grad-c), var(--grad-a));
+  border: 2px solid var(--surface);
+  margin-left: -7px;
+}
+.contribs span:first-child { margin-left: 0; }
+
+/* The honesty line. Quiet, but never hidden. */
+.prices__disclaimer {
+  margin-top: 20px; text-align: center;
+  font-size: 0.8rem; color: var(--fg-subtle);
+}
+.prices__disclaimer b { color: var(--fg-muted); font-weight: 700; }
+
+/* Sample vs live. The default state is the illustrative note, and it stays
+   put unless assets/data/prices.json declares source: "live" — a page that
+   claims real prices by default is a page that lies when the fetch fails. */
+.prices__disclaimer [data-note="live"] { display: none; }
+.prices__disclaimer[data-state="live"] [data-note="sample"] { display: none; }
+.prices__disclaimer[data-state="live"] [data-note="live"] { display: inline; }
+
+@media (max-width: 959px) {
+  .prices__visual { order: -1; }
+}
+
 /* ---------------------------------------------------------------------
-   11. Problem — flat bordered cards
+   11. Problem — floating glass cards
    ------------------------------------------------------------------- */
 .cards-3 {
   display: grid; gap: 18px;
@@ -492,37 +1044,73 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 @media (min-width: 720px) { .cards-3 { grid-template-columns: repeat(3, 1fr); } }
 
 .pain {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
-  padding: 28px;
-  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  border-radius: var(--r-xl);
+  padding: 30px;
+  box-shadow: var(--elev-1);
+  transition: border-color 0.3s var(--ease), box-shadow 0.4s var(--ease);
+  /* JS writes --rx/--ry for the pointer tilt; unitless, same reasoning as
+     the buttons. Without JS the card is flat and perfectly usable. */
+  --rx: 0; --ry: 0;
+  transform: perspective(900px) rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg));
+  transform-style: preserve-3d;
 }
-.pain:hover { border-color: var(--border-strong); transform: translateY(-3px); }
+.pain:hover { border-color: var(--border-strong); box-shadow: var(--elev-2); }
 .pain__ico {
   width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center;
   background: rgba(201, 130, 31, 0.12); color: var(--amber); margin-bottom: 18px;
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease);
+}
+.pain:hover .pain__ico {
+  transform: translateZ(24px) scale(1.06);
+  box-shadow: 0 10px 26px -12px rgba(201,130,31,0.7);
 }
 .pain__ico svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2; }
+/* The draw-on dash is set by main.js per path, from each path's own
+   measured length. Deliberately not declared here: a CSS resting state
+   survives GSAP's clearProps and would silently blank the icons again the
+   moment the tween finished tidying up. */
 .pain h3 { font-size: 1.22rem; letter-spacing: -0.02em; }
 .pain p { margin-top: 10px; color: var(--fg-muted); font-size: 0.98rem; }
 
 /* ---------------------------------------------------------------------
    12. How it works
    ------------------------------------------------------------------- */
-.steps { display: grid; gap: 18px; grid-template-columns: 1fr; }
+.steps { display: grid; gap: 18px; grid-template-columns: 1fr; position: relative; }
 @media (min-width: 620px) { .steps { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .steps { grid-template-columns: repeat(4, 1fr); } }
 
-.step {
-  position: relative; background: rgba(255,255,255,0.05); border: 1px solid var(--forest-hair);
-  border-radius: var(--r-lg); padding: 24px 22px 22px;
-  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+/* A lime thread drawn through the four step numbers as the section
+   arrives — it turns four cards into one sequence. Desktop only, where
+   the steps actually sit in a row. */
+.steps__thread {
+  display: none;
+  position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--lime), transparent);
+  transform: scaleX(0); transform-origin: 0 50%;
+  pointer-events: none; opacity: 0.55;
 }
-.step:hover { border-color: rgba(255,255,255,0.34); transform: translateY(-3px); }
+@media (min-width: 1000px) { .steps__thread { display: block; } }
+
+.step {
+  position: relative;
+  background: var(--glass-dark); border: 1px solid var(--forest-hair);
+  border-radius: var(--r-xl); padding: 24px 22px 22px;
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease-out-expo),
+              background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.step:hover {
+  border-color: rgba(181,227,77,0.5);
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 30px 50px -30px rgba(0,0,0,0.7);
+}
 .step__n {
   width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
   background: var(--lime); color: var(--on-lime); font-weight: 800; font-size: 1.05rem;
   margin-bottom: 16px;
+  transition: box-shadow 0.3s var(--ease);
 }
+.step:hover .step__n { box-shadow: 0 0 22px -2px rgba(181,227,77,0.8); }
 .step h3 { font-size: 1.1rem; letter-spacing: -0.02em; }
 .step p { margin-top: 8px; color: var(--on-forest-mut); font-size: 0.94rem; }
 .step .tag {
@@ -541,17 +1129,27 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 }
 .feature + .feature { border-top: 1px solid var(--border-2); }
 .feature__media { position: relative; }
-/* Grounding tint behind the phone — soft, not a glow bloom */
+/* Grounding tint behind the phone */
 .feature__media::before {
   content: ""; position: absolute; inset: 8% 12%; z-index: -1;
   border-radius: 28px; background: var(--bg-soft);
 }
-.feature__glow { display: none; }
+/* Re-enabled: a soft bloom that lifts the screenshot off the page. */
+.feature__glow {
+  display: block;
+  position: absolute; inset: -14% -6%; z-index: -2; pointer-events: none;
+  background: var(--wash-lime);
+  opacity: 0.85;
+}
+.feature--reverse .feature__glow { background: var(--wash-forest); }
 .feature__ico {
   width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center;
   background: var(--surface); border: 1px solid var(--border); color: var(--grad-c);
   margin-bottom: 18px;
+  box-shadow: var(--elev-1);
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease);
 }
+.feature:hover .feature__ico { transform: scale(1.06); box-shadow: var(--elev-2); }
 .feature__ico svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
 /* Zeb's own row wears his purple, so the assistant reads as its own thing */
 .feature__ico--zeb {
@@ -581,14 +1179,37 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 /* ---------------------------------------------------------------------
    14. Screens gallery (scroll-snap)
    ------------------------------------------------------------------- */
+/* Native scroll-snap is kept deliberately. A pinned horizontal-scroll
+   section looks impressive in a demo and breaks keyboard navigation,
+   trackpad panning and mobile scroll in real use. Edge masks and
+   drag-to-scroll give it the same polish without taking the scroll away. */
 .gallery { position: relative; }
 .gallery__track {
-  display: flex; gap: 26px; overflow-x: auto; scroll-snap-type: x mandatory;
+  /* proximity, not mandatory: mandatory re-snaps after every scroll write,
+     which clamps wheel and drag scrolling to a single card per gesture and
+     makes the rail feel stuck. Proximity still snaps when you come to rest. */
+  display: flex; gap: 26px; overflow-x: auto; scroll-snap-type: x proximity;
   padding: 8px var(--gutter) 30px; margin-inline: calc(-1 * var(--gutter));
   -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 .gallery__track::-webkit-scrollbar { display: none; }
-.gallery__item { scroll-snap-align: center; flex: 0 0 auto; width: 250px; }
+.js .gallery__track { cursor: grab; }
+.js .gallery__track.is-dragging { cursor: grabbing; }
+.js .gallery__track.is-dragging * { pointer-events: none; }
+/* Snapping is suspended mid-gesture (see initRails in main.js) and restored
+   once the rail comes to rest, so it lands on a card without fighting the
+   scroll on the way there. */
+.js .gallery__track.is-dragging,
+.js .gallery__track.is-freescroll,
+.js .quotes.is-dragging,
+.js .quotes.is-freescroll { scroll-snap-type: none; }
+.gallery__item {
+  scroll-snap-align: center; flex: 0 0 auto; width: 250px;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.gallery__item:hover { transform: translateY(-6px); }
 .gallery__item .device { max-width: 250px; }
 .gallery__cap { margin-top: 14px; text-align: center; }
 .gallery__cap b { display: block; font-weight: 700; letter-spacing: -0.01em; }
@@ -621,12 +1242,27 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 @media (min-width: 700px)  { .trust-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1060px) { .trust-grid { grid-template-columns: repeat(4, 1fr); } }
 .trust-card {
-  background: rgba(255,255,255,0.05); border: 1px solid var(--forest-hair);
-  border-radius: var(--r-lg); padding: 28px;
+  background: var(--glass-dark); border: 1px solid var(--forest-hair);
+  border-radius: var(--r-xl); padding: 28px;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease),
+              transform 0.3s var(--ease-out-expo);
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .trust-card { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+}
+.trust-card:hover {
+  border-color: rgba(181,227,77,0.45);
+  background: rgba(255,255,255,0.11);
+  transform: translateY(-5px);
 }
 .trust-card__ico {
   width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
   background: var(--lime); color: var(--on-lime); margin-bottom: 18px;
+  transition: box-shadow 0.4s var(--ease), transform 0.4s var(--ease-spring);
+}
+.trust-card:hover .trust-card__ico {
+  box-shadow: 0 0 26px -2px rgba(181,227,77,0.85);
+  transform: scale(1.06);
 }
 .trust-card__ico svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
 .trust-card h3 { font-size: 1.18rem; letter-spacing: -0.02em; }
@@ -649,7 +1285,8 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 .founder__avatar {
   flex: none; width: 76px; height: 76px; border-radius: 50%;
   overflow: hidden; background: var(--surface-2);
-  border: 3px solid var(--surface); box-shadow: 0 0 0 2px var(--lime-deep);
+  border: 3px solid var(--surface);
+  box-shadow: 0 0 0 2px var(--lime-deep), 0 14px 30px -14px rgba(13,46,33,0.6);
 }
 .founder__avatar img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -680,14 +1317,27 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
    16. Pricing
    ------------------------------------------------------------------- */
 .price-toggle {
+  position: relative;
   display: inline-flex; align-items: center; gap: 4px; margin: 22px auto 0;
   padding: 5px; border-radius: 999px; background: var(--bg-soft); border: 1px solid var(--border);
 }
 .price-toggle button {
+  position: relative; z-index: 1;
   padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: 0.9rem; color: var(--fg-muted);
-  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  transition: color 0.2s var(--ease);
 }
-.price-toggle button.is-active { background: var(--surface); color: var(--fg); border: 1px solid var(--border); }
+.price-toggle button.is-active { color: var(--fg); }
+/* One pill that slides between the two options rather than a background
+   that blinks on and off. */
+.price-toggle__pill {
+  position: absolute; z-index: 0; top: 5px; left: 5px;
+  height: calc(100% - 10px); border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border);
+  box-shadow: var(--elev-1);
+  transform-origin: 0 50%;
+}
+html:not(.js) .price-toggle__pill { display: none; }
+html:not(.js) .price-toggle button.is-active { background: var(--surface); border: 1px solid var(--border); }
 .price-toggle .save { font-size: 0.72rem; color: #3d5c12; background: rgba(155,203,52,0.28); padding: 2px 7px; border-radius: 999px; margin-left: 6px; }
 
 .plans { display: grid; gap: 20px; grid-template-columns: 1fr; align-items: stretch; }
@@ -695,14 +1345,24 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 
 .plan {
   position: relative; display: flex; flex-direction: column;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-2xl);
   padding: 30px;
+  box-shadow: var(--elev-1);
+  transition: transform 0.35s var(--ease-out-expo), box-shadow 0.35s var(--ease),
+              border-color 0.35s var(--ease);
 }
+.plan:hover { transform: translateY(-6px); box-shadow: var(--elev-2); border-color: var(--border-strong); }
 .plan--featured {
   border-color: var(--lime-deep);
-  box-shadow: inset 0 0 0 1px var(--lime-deep);
   background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--lime-deep), var(--glow-lime);
 }
+.plan--featured:hover {
+  border-color: var(--lime-deep);
+  box-shadow: inset 0 0 0 1px var(--lime-deep), 0 0 0 1px rgba(155,203,52,0.22),
+              0 24px 64px -14px rgba(181,227,77,0.68);
+}
+.plan__price .amt { display: inline-block; }
 .plan__badge {
   position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
   background: var(--lime); color: var(--on-lime); font-weight: 800; font-size: 0.74rem;
@@ -730,13 +1390,21 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   scroll-padding-inline: var(--gutter);
   padding: 4px var(--gutter) 26px; margin-inline: calc(-1 * var(--gutter));
   -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
 .quotes::-webkit-scrollbar { display: none; }
+.js .quotes { cursor: grab; }
+.js .quotes.is-dragging { cursor: grabbing; }
+.js .quotes.is-dragging * { pointer-events: none; }
 .quote {
   scroll-snap-align: start; flex: 0 0 auto; width: min(340px, 82vw);
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl);
   padding: 26px; display: flex; flex-direction: column;
+  box-shadow: var(--elev-1);
+  transition: transform 0.35s var(--ease-out-expo), box-shadow 0.35s var(--ease);
 }
+.quote:hover { transform: translateY(-5px); box-shadow: var(--elev-2); }
 .quotes:focus-visible { outline: 3px solid var(--lime-ring); outline-offset: 4px; border-radius: 12px; }
 .quote__mark { color: var(--lime-deep); font-size: 2.4rem; line-height: 0.6; font-weight: 800; }
 .quote p { margin-top: 10px; color: var(--fg); font-size: 1rem; }
@@ -790,22 +1458,38 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
    19b. FAQ (native disclosure)
    ------------------------------------------------------------------- */
 .faq-item {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
   padding: 4px 22px;
+  box-shadow: var(--elev-1);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
-.faq-item + .faq-item { }
+.faq-item:hover { border-color: var(--border-strong); }
+.faq-item[open] { box-shadow: var(--elev-2); }
 .faq-item summary {
   list-style: none; cursor: pointer; padding: 18px 34px 18px 0; position: relative;
   font-weight: 700; letter-spacing: -0.01em; font-size: 1.04rem;
+  transition: color 0.2s var(--ease);
 }
 .faq-item summary::-webkit-details-marker { display: none; }
-.faq-item summary::after {
-  content: "+"; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-  font-size: 1.5rem; font-weight: 500; color: var(--fg-subtle); transition: transform 0.25s var(--ease);
+/* A rotating cross reads as one continuous object opening and closing;
+   swapping a "+" glyph for a "–" is two separate states. */
+.faq-item summary::after,
+.faq-item summary::before {
+  content: ""; position: absolute; right: 4px; top: 50%;
+  width: 13px; height: 2px; border-radius: 2px; background: var(--fg-subtle);
+  transition: transform 0.35s var(--ease-out-expo), background 0.25s var(--ease);
 }
-.faq-item[open] summary::after { content: "\2013"; }
+.faq-item summary::after  { transform: translateY(-50%); }
+.faq-item summary::before { transform: translateY(-50%) rotate(90deg); }
+.faq-item[open] summary::before { transform: translateY(-50%) rotate(0deg); }
+.faq-item[open] summary::after,
+.faq-item[open] summary::before { background: var(--lime-deep); }
 .faq-item p { padding: 0 0 20px; color: var(--fg-muted); font-size: 0.98rem; max-width: 62ch; }
 .faq-item[open] summary { color: var(--fg); }
+/* JS animates this wrapper's height; the <p> inside keeps its own padding
+   so nothing collapses to zero mid-transition. */
+.faq-item__body { overflow: hidden; }
+.faq-list { max-width: 760px; margin-inline: auto; display: grid; gap: 12px; }
 
 /* ---------------------------------------------------------------------
    20. Misc helpers
@@ -848,34 +1532,6 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 .zeb-bubble b { color: var(--zeb-purple-ink); }
 .zeb-bubble--purple { border-color: rgba(124,92,255,0.4); background: var(--zeb-purple-soft); }
 .zeb-bubble--purple b { color: var(--zeb-purple-ink); }
-
-/* --- Hero: Zeb waving hello ----------------------------------------- */
-.zeb-hero {
-  position: absolute; left: -2%; bottom: -3%; z-index: 4;
-  width: clamp(120px, 17vw, 188px);
-  margin: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-  pointer-events: none;
-}
-.zeb-hero .zeb-bubble {
-  margin-left: 8%;
-  animation: zeb-pop 0.5s var(--ease) both;
-}
-.zeb-hero .zeb-bubble::after {
-  content: ""; position: absolute; left: 26px; bottom: -8px;
-  width: 16px; height: 16px; background: var(--zeb-purple-soft);
-  border-right: 1px solid rgba(124,92,255,0.4); border-bottom: 1px solid rgba(124,92,255,0.4);
-  transform: rotate(45deg);
-}
-.zeb-hero img {
-  width: 100%; height: auto;
-  filter: drop-shadow(0 16px 22px rgba(13,46,33,0.28));
-  animation: zeb-bob 4.2s ease-in-out infinite;
-  transform-origin: bottom center;
-}
-@media (max-width: 620px) {
-  .zeb-hero { width: 108px; left: 0; bottom: 0; }
-  .zeb-hero .zeb-bubble { display: none; }
-}
 
 /* --- Contextual poses (section heads + final CTA) ------------------- */
 .section-head--zeb { position: relative; }
@@ -982,7 +1638,18 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zeb-hero img, .section-head--zeb .zeb-pose, .zeb-pose--final,
+  .section-head--zeb .zeb-pose, .zeb-pose--final,
   .zeb-pose--budget, .zeb-guide__btn { animation: none !important; }
   .zeb-guide__ping { display: none; }
+
+  /* Every ambient loop introduced by the redesign. These run forever, so
+     they are the ones that actually matter to someone who asked the OS
+     for less motion. */
+  .grain, .pin.is-active .pin__ring, .price-card__meta .live,
+  .cloud, .fan__slot .device { animation: none !important; }
+  .pin.is-active .pin__ring { opacity: 0.4; }
+  .price-card__meta .live { opacity: 1; }
+  .btn, .price-card, .quote, .plan, .gallery__item, .step, .trust-card {
+    transition-duration: 0.001ms !important;
+  }
 }
