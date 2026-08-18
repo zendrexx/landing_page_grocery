@@ -233,9 +233,9 @@
       gsap.to(el, { opacity: 1, y: 0, x: 0, scale: 1, scrollTrigger: trigger });
     });
 
-    /* Problem-card icons draw themselves on. Each path's own length is
-       measured so the dash maths is right for every glyph. */
-    Array.prototype.forEach.call(document.querySelectorAll('.pain__ico svg'), function (svg) {
+    /* Bento icons draw themselves on. Each path's own length is measured
+       so the dash maths is right for every glyph. */
+    Array.prototype.forEach.call(document.querySelectorAll('.bento__ico svg'), function (svg) {
       var strokes = svg.querySelectorAll('path, circle');
       Array.prototype.forEach.call(strokes, function (s) {
         var len = 120;
@@ -244,19 +244,10 @@
       });
       gsap.to(strokes, {
         strokeDashoffset: 0, duration: 1, stagger: 0.1, ease: 'power2.out',
-        scrollTrigger: { trigger: svg.closest('.pain'), start: 'top 82%', once: true },
+        scrollTrigger: { trigger: svg.closest('.bento__card'), start: 'top 82%', once: true },
         onComplete: function () { gsap.set(strokes, { clearProps: 'strokeDasharray,strokeDashoffset' }); }
       });
     });
-
-    /* The lime thread through the four "how it works" steps. */
-    var thread = document.querySelector('[data-steps-thread]');
-    if (thread) {
-      gsap.to(thread, {
-        scaleX: 1, duration: 1.2, ease: 'power2.inOut',
-        scrollTrigger: { trigger: thread.parentNode, start: 'top 78%', once: true }
-      });
-    }
   })();
 
   /* -------------------------------------------------------------------
@@ -382,22 +373,10 @@
       });
       btn.addEventListener('pointerleave', function () { qx(0); qy(0); });
     });
-
-    // Card tilt, 4° maximum. Enough to feel physical, not enough to notice.
-    Array.prototype.forEach.call(document.querySelectorAll('.pain'), function (card) {
-      var qry = gsap.quickTo(card, '--ry', { duration: 0.5, ease: 'power3.out' });
-      var qrx = gsap.quickTo(card, '--rx', { duration: 0.5, ease: 'power3.out' });
-      card.addEventListener('pointermove', function (e) {
-        var r = card.getBoundingClientRect();
-        qry(((e.clientX - r.left) / r.width - 0.5) * 8);
-        qrx(((e.clientY - r.top) / r.height - 0.5) * -8);
-      });
-      card.addEventListener('pointerleave', function () { qry(0); qrx(0); });
-    });
   })();
 
   /* -------------------------------------------------------------------
-     Horizontal rails (screenshot gallery, testimonials)
+     Horizontal rails (the testimonial carousel)
 
      Native scroll, scroll-snap and keyboard access are all left intact.
      Two desktop-only problems have to be solved on top of them:
@@ -413,7 +392,7 @@
         drag-to-scroll. Cancelling dragstart fixes it.
      ----------------------------------------------------------------- */
   (function initRails() {
-    var rails = document.querySelectorAll('[data-drag-scroll], .gallery__track, .quotes');
+    var rails = document.querySelectorAll('[data-drag-scroll], .quotes');
 
     Array.prototype.forEach.call(rails, function (rail) {
 

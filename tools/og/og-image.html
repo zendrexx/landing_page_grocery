@@ -1,0 +1,137 @@
+<!--
+  Source for assets/og-image.png (1200x630) — the card that renders when the
+  site is shared. Dev-time only; `tools` is named in .assetsignore so this
+  never deploys.
+
+  Rebuild it by serving the repo root and screenshotting this page at exactly
+  1200x630:
+
+    python -m http.server 8000
+    chrome --headless --disable-gpu --hide-scrollbars --window-size=1200,630 \
+           --screenshot=assets/og-image.png \
+           http://127.0.0.1:8000/tools/og/og-image.html
+
+  Everything here is deliberately self-contained rather than importing
+  styles.css: this is a 1200x630 fixed canvas, so it wants none of the site's
+  responsive rules, and a change to the page must never silently reshape the
+  social card.
+-->
+<meta charset="utf-8" />
+<title>Zebite — OG image source</title>
+<style>
+  @font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: url('../../assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2');
+    font-weight: 500 800; font-display: block;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #fff;
+    background: linear-gradient(150deg, #0D2E21 0%, #123B2A 55%, #1B5C41 100%);
+  }
+  /* the same aurora + grid the site's forest bands wear */
+  .aurora {
+    position: absolute; inset: -30%;
+    background:
+      radial-gradient(28% 34% at 32% 38%, rgba(181,227,77,0.22), transparent 70%),
+      radial-gradient(26% 30% at 74% 60%, rgba(46,158,91,0.26), transparent 70%);
+    filter: blur(40px);
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 72px 72px;
+    -webkit-mask-image: radial-gradient(100% 90% at 50% 0%, #000, transparent 90%);
+  }
+
+  .wrap { position: relative; display: flex; height: 100%; }
+
+  /* ---- copy ---- */
+  .copy { width: 610px; padding: 52px 0 52px 62px; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand img { width: 46px; height: 46px; border-radius: 12px; }
+  .brand b { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; }
+  .brand b i { font-style: normal; color: #B5E34D; }
+
+  h1 {
+    margin-top: 40px;
+    font-size: 3.45rem; line-height: 1.02; font-weight: 800; letter-spacing: -0.035em;
+  }
+  h1 span { color: #B5E34D; display: block; }
+
+  p.sub {
+    margin-top: 20px; max-width: 30ch;
+    font-size: 1.06rem; line-height: 1.5; font-weight: 500;
+    color: rgba(255,255,255,0.76);
+  }
+
+  /* 2x2 rather than flex-wrap: four labels of uneven length wrap 3+1, which
+     reads as a widow on a card this size. */
+  ul { list-style: none; margin-top: auto; display: grid; gap: 9px;
+       grid-template-columns: repeat(2, max-content); }
+  li {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; font-weight: 700; color: #B5E34D;
+    background: rgba(181,227,77,0.1); border: 1px solid rgba(181,227,77,0.34);
+    padding: 8px 15px; border-radius: 999px;
+  }
+  li::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: #B5E34D; }
+
+  /* ---- phones ---- */
+  .stage { position: relative; flex: 1; }
+  .device {
+    position: absolute; top: 0;
+    background: linear-gradient(158deg, #3a3a3c 0%, #1c1c1e 55%, #0e0e10 100%);
+    border-radius: 15%/7.2%; padding: 1.1%;
+    box-shadow: 0 40px 70px -30px rgba(0,0,0,0.65);
+  }
+  .device .screen { position: relative; border-radius: 13.6%/6.5%; overflow: hidden; background: #F3F1E9; }
+  .device img { display: block; width: 100%; height: auto; }
+  .island {
+    position: absolute; top: 2.4%; left: 50%; transform: translateX(-50%);
+    width: 26%; height: 3.1%; background: #0a0d0a; border-radius: 999px;
+  }
+
+  .d1 { width: 236px; left: -34px;  top: 118px; transform: rotate(-7deg); }
+  .d2 { width: 236px; left: 316px;  top: 118px; transform: rotate(7deg); }
+  .d3 { width: 268px; left: 130px;  top: 74px;  z-index: 2; }
+</style>
+
+<div class="aurora"></div>
+<div class="grid"></div>
+
+<div class="wrap">
+  <div class="copy">
+    <div class="brand">
+      <img src="../../assets/zeb/face.webp" alt="" />
+      <b>Ze<i>bite</i></b>
+    </div>
+
+    <h1>Smarter groceries,<span>planned by AI.</span></h1>
+
+    <p class="sub">One plan a week — around the food in your pantry, your calorie
+      and protein targets, and your budget. Portioned for the whole family.</p>
+
+    <ul>
+      <li>Pantry-first</li>
+      <li>Hits your macros</li>
+      <li>Within budget</li>
+      <li>Family portions</li>
+    </ul>
+  </div>
+
+  <div class="stage">
+    <div class="device d1"><div class="screen"><span class="island"></span>
+      <img src="../../assets/screens/dark/40_pantry.webp" alt="" /></div></div>
+    <div class="device d2"><div class="screen"><span class="island"></span>
+      <img src="../../assets/screens/dark/20_plan.webp" alt="" /></div></div>
+    <div class="device d3"><div class="screen"><span class="island"></span>
+      <img src="../../assets/screens/light/10_home.webp" alt="" /></div></div>
+  </div>
+</div>

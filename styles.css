@@ -263,8 +263,7 @@ p, li { text-wrap: pretty; }
   filter: none !important;
 }
 .motion-off .fan__slot .device { animation: none !important; }
-.motion-off .nav__progress,
-.motion-off .steps__thread { transform: scaleX(1); }
+.motion-off .nav__progress { transform: scaleX(1); }
 .motion-off .confidence__fill { transform: scaleX(0.94); }
 
 /* Lenis owns the scroll while it is running. */
@@ -321,8 +320,8 @@ html.lenis, html.lenis body { height: auto; }
   padding-inline: var(--gutter);
 }
 
-.section { padding-block: clamp(72px, 9vw, 128px); position: relative; }
-.section--tight { padding-block: clamp(44px, 6vw, 76px); }
+.section { padding-block: clamp(58px, 7vw, 104px); position: relative; }
+.section--tight { padding-block: clamp(40px, 5vw, 68px); }
 .section--soft {
   background:
     radial-gradient(90% 60% at 50% 0%, rgba(255,255,255,0.9), transparent 70%),
@@ -348,7 +347,7 @@ html.lenis, html.lenis body { height: auto; }
     radial-gradient(60% 45% at 50% 100%, rgba(181,227,77,0.10), transparent 70%);
 }
 
-.section-head { max-width: 720px; margin-bottom: clamp(34px, 5vw, 56px); }
+.section-head { max-width: 720px; margin-bottom: clamp(26px, 4vw, 44px); }
 .section-head--center { margin-inline: auto; text-align: center; }
 
 .eyebrow {
@@ -808,18 +807,6 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   .cloud--3, .cloud--4 { display: none; }
 }
 
-.phone-wrap { display: flex; justify-content: center; }
-.phone-wrap .device { max-width: 300px; }
-
-/* ---------------------------------------------------------------------
-   10. Built-with strip
-   ------------------------------------------------------------------- */
-.builtwith {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-  gap: 12px 30px; color: var(--fg-subtle); font-weight: 700;
-  font-size: 0.82rem; letter-spacing: 0.04em;
-}
-
 /* =====================================================================
    10b. Price intelligence — the Philippines map
    A dot-matrix archipelago. The dotted texture comes from a <pattern>
@@ -1069,188 +1056,227 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
 }
 
 /* ---------------------------------------------------------------------
-   11. Problem — floating glass cards
+   12. Flow — the old four-step section, as one strip
+   Three panes of one card rather than three cards: a sequence should read
+   as a single object, and it costs a third of the height.
    ------------------------------------------------------------------- */
-.cards-3 {
-  display: grid; gap: 18px;
-  grid-template-columns: 1fr;
-}
-@media (min-width: 720px) { .cards-3 { grid-template-columns: repeat(3, 1fr); } }
-
-.pain {
-  border-radius: var(--r-xl);
-  padding: 30px;
+.flow {
+  display: grid; grid-template-columns: 1fr;
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: var(--r-2xl); overflow: hidden;
   box-shadow: var(--elev-1);
-  transition: border-color 0.3s var(--ease), box-shadow 0.4s var(--ease);
-  /* JS writes --rx/--ry for the pointer tilt; unitless, same reasoning as
-     the buttons. Without JS the card is flat and perfectly usable. */
-  --rx: 0; --ry: 0;
-  transform: perspective(900px) rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg));
-  transform-style: preserve-3d;
+  margin-bottom: clamp(30px, 4.5vw, 52px);
 }
-.pain:hover { border-color: var(--border-strong); box-shadow: var(--elev-2); }
-.pain__ico {
-  width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center;
-  background: rgba(201, 130, 31, 0.12); color: var(--amber); margin-bottom: 18px;
-  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease);
+.flow__step {
+  display: grid; grid-template-columns: auto 1fr; gap: 2px 14px;
+  align-items: start; padding: 20px 22px;
 }
-.pain:hover .pain__ico {
-  transform: translateZ(24px) scale(1.06);
-  box-shadow: 0 10px 26px -12px rgba(201,130,31,0.7);
+.flow__step + .flow__step { border-top: 1px solid var(--border-2); }
+@media (min-width: 780px) {
+  .flow { grid-template-columns: repeat(3, 1fr); }
+  .flow__step + .flow__step { border-top: 0; border-left: 1px solid var(--border-2); }
+  .flow__step { padding: 24px 26px; }
 }
-.pain__ico svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2; }
-/* The draw-on dash is set by main.js per path, from each path's own
-   measured length. Deliberately not declared here: a CSS resting state
-   survives GSAP's clearProps and would silently blank the icons again the
-   moment the tween finished tidying up. */
-.pain h3 { font-size: 1.22rem; letter-spacing: -0.02em; }
-.pain p { margin-top: 10px; color: var(--fg-muted); font-size: 0.98rem; }
+.flow__n {
+  grid-row: 1 / 3;
+  width: 34px; height: 34px; border-radius: 11px;
+  display: grid; place-items: center;
+  background: var(--lime); color: var(--on-lime);
+  font-weight: 800; font-size: 1rem;
+}
+.flow__step h3 { font-size: 1.04rem; letter-spacing: -0.02em; align-self: center; }
+.flow__step p { color: var(--fg-muted); font-size: 0.93rem; margin-top: 5px; }
+@media (min-width: 780px) { .flow__step h3 { align-self: end; } }
 
 /* ---------------------------------------------------------------------
-   12. How it works
+   13. Bento — one grid where six alternating feature rows used to be
+   Every card that earns a screenshot gets one, cropped to its top third
+   and bled off the card's bottom edge. That is the whole height saving:
+   a phone reads as a phone from its first 200px, and the part below the
+   fold of a screenshot was never the part doing the selling.
    ------------------------------------------------------------------- */
-.steps { display: grid; gap: 18px; grid-template-columns: 1fr; position: relative; }
-@media (min-width: 620px) { .steps { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1000px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+.bento { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 700px) {
+  .bento { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .bento__card--wide { grid-column: span 2; }
+}
+@media (min-width: 1020px) { .bento { grid-template-columns: repeat(3, 1fr); } }
 
-/* A lime thread drawn through the four step numbers as the section
-   arrives — it turns four cards into one sequence. Desktop only, where
-   the steps actually sit in a row. */
-.steps__thread {
-  display: none;
-  position: absolute; left: 0; right: 0; top: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--lime), transparent);
-  transform: scaleX(0); transform-origin: 0 50%;
-  pointer-events: none; opacity: 0.55;
+.bento__card {
+  position: relative; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: var(--r-2xl); overflow: hidden;
+  box-shadow: var(--elev-1);
+  transition: border-color 0.3s var(--ease), box-shadow 0.4s var(--ease),
+              transform 0.4s var(--ease-out-expo);
 }
-@media (min-width: 1000px) { .steps__thread { display: block; } }
-
-.step {
-  position: relative;
-  background: var(--glass-dark); border: 1px solid var(--forest-hair);
-  border-radius: var(--r-xl); padding: 24px 22px 22px;
-  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease-out-expo),
-              background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+.bento__card:hover {
+  border-color: var(--border); box-shadow: var(--elev-2); transform: translateY(-4px);
 }
-.step:hover {
-  border-color: rgba(181,227,77,0.5);
-  background: rgba(255,255,255,0.1);
-  transform: translateY(-5px);
-  box-shadow: 0 30px 50px -30px rgba(0,0,0,0.7);
-}
-.step__n {
-  width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
-  background: var(--lime); color: var(--on-lime); font-weight: 800; font-size: 1.05rem;
-  margin-bottom: 16px;
-  transition: box-shadow 0.3s var(--ease);
-}
-.step:hover .step__n { box-shadow: 0 0 22px -2px rgba(181,227,77,0.8); }
-.step h3 { font-size: 1.1rem; letter-spacing: -0.02em; }
-.step p { margin-top: 8px; color: var(--on-forest-mut); font-size: 0.94rem; }
-.step .tag {
-  display: inline-block; margin-top: 14px; font-size: 0.75rem; font-weight: 700;
-  color: var(--lime); background: rgba(181,227,77,0.12); border: 1px solid rgba(181,227,77,0.4);
-  padding: 4px 10px; border-radius: 999px;
-}
-.forest .step .phone-wrap .device { max-width: 220px; }
-
-/* ---------------------------------------------------------------------
-   13. Feature rows (alternating) — screenshots carry these
-   ------------------------------------------------------------------- */
-.feature {
-  display: grid; gap: clamp(28px, 5vw, 64px); align-items: center;
-  padding-block: clamp(36px, 5vw, 58px);
-}
-.feature + .feature { border-top: 1px solid var(--border-2); }
-.feature__media { position: relative; }
-/* Grounding tint behind the phone */
-.feature__media::before {
-  content: ""; position: absolute; inset: 8% 12%; z-index: -1;
-  border-radius: 28px; background: var(--bg-soft);
-}
-/* Re-enabled: a soft bloom that lifts the screenshot off the page. */
-.feature__glow {
-  display: block;
-  position: absolute; inset: -14% -6%; z-index: -2; pointer-events: none;
-  background: var(--wash-lime);
-  opacity: 0.85;
-}
-.feature--reverse .feature__glow { background: var(--wash-forest); }
-.feature__ico {
-  width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center;
+.bento__body { padding: 26px 26px 4px; }
+.bento__ico {
+  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
   background: var(--surface); border: 1px solid var(--border); color: var(--grad-c);
-  margin-bottom: 18px;
-  box-shadow: var(--elev-1);
+  margin-bottom: 16px; box-shadow: var(--elev-1);
   transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease);
 }
-.feature:hover .feature__ico { transform: scale(1.06); box-shadow: var(--elev-2); }
-.feature__ico svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
-/* Zeb's own row wears his purple, so the assistant reads as its own thing */
-.feature__ico--zeb {
-  background: var(--zeb-purple-soft); border-color: rgba(124, 92, 255, 0.34);
-  color: var(--zeb-purple-ink);
-}
-.feature h3 { font-size: clamp(1.45rem, 2.6vw, 1.95rem); letter-spacing: -0.03em; }
-.feature p { margin-top: 14px; color: var(--fg-muted); font-size: 1.03rem; max-width: 46ch; }
-.feature__list { margin-top: 20px; display: grid; gap: 11px; }
-.feature__list li { display: flex; gap: 11px; align-items: flex-start; color: var(--fg); font-size: 0.98rem; font-weight: 500; }
-.feature__list svg { flex: none; width: 21px; height: 21px; margin-top: 1px; color: var(--success); }
+.bento__card:hover .bento__ico { transform: scale(1.06); box-shadow: var(--elev-2); }
+.bento__ico svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
+.bento__card h3 { font-size: 1.22rem; letter-spacing: -0.025em; }
+.bento__card p { margin-top: 10px; color: var(--fg-muted); font-size: 0.97rem; max-width: 46ch; }
 
-@media (min-width: 900px) {
-  .feature { grid-template-columns: 1fr 1fr; }
-  .feature--reverse .feature__media { order: 2; }
+/* The clipped phone. Height lives on the shot, not the card, so the crop
+   is the same whether the card is a column or (at --wide) a row. */
+.bento__shot {
+  position: relative; margin-top: 22px;
+  height: 196px; overflow: hidden;
+  display: flex; justify-content: center;
+  padding-inline: 26px;
+}
+.bento__shot .device { width: 100%; max-width: 208px; align-self: flex-start; }
+
+/* Bottom sheets live at the bottom of the screen, so that card anchors the
+   phone by its foot instead and fades the cut edge into the card. */
+.bento__shot--tail .device { align-self: flex-end; }
+.bento__shot--tail::before {
+  content: ""; position: absolute; z-index: 2; pointer-events: none;
+  inset: 0 0 auto; height: 64px;
+  background: linear-gradient(var(--surface) 24%, transparent);
 }
 
-/* Mobile: lead with the words, follow with a compact screenshot — so the
-   per-feature details read first instead of a full-screen phone hiding them. */
-@media (max-width: 899px) {
-  .feature { gap: 24px; }
-  .feature__body { order: 1; }
-  .feature__media { order: 2; }
-  .feature .phone-wrap .device { max-width: 240px; }
+@media (min-width: 700px) {
+  .bento__card--wide { flex-direction: row; align-items: stretch; }
+  .bento__card--wide .bento__body { flex: 1 1 auto; align-self: center; padding: 34px 8px 34px 34px; }
+  .bento__shot--side {
+    flex: 0 0 44%; align-self: flex-end;
+    height: 330px; margin-top: 0; padding: 34px 34px 0;
+  }
+  .bento__shot--side .device { max-width: 230px; }
+}
+
+/* Zeb keeps his spot beside the budget shot */
+.bento__shot--zeb { overflow: visible; }
+.bento__shot--zeb .device { position: relative; z-index: 1; }
+
+.bento__card--list { padding: 26px; justify-content: center; }
+.mini { display: grid; gap: 20px; }
+.mini li { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; }
+.mini__ico {
+  width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center;
+  background: var(--bg-soft); border: 1px solid var(--border-2); color: var(--grad-c);
+}
+.mini__ico svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+.mini b { display: block; font-size: 1rem; letter-spacing: -0.015em; }
+.mini span { display: block; margin-top: 4px; color: var(--fg-muted); font-size: 0.92rem; }
+
+/* Shared chip row — used by the bento and by the family section */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+.chips li {
+  font-size: 0.78rem; font-weight: 700; color: var(--grad-c);
+  background: rgba(27, 92, 65, 0.07); border: 1px solid rgba(27, 92, 65, 0.14);
+  padding: 5px 11px; border-radius: 999px;
+}
+.chips--on-forest li {
+  color: var(--lime); background: rgba(181, 227, 77, 0.1);
+  border-color: rgba(181, 227, 77, 0.32);
 }
 
 /* ---------------------------------------------------------------------
-   14. Screens gallery (scroll-snap)
+   14. Family — one pot, four plates
    ------------------------------------------------------------------- */
-/* Native scroll-snap is kept deliberately. A pinned horizontal-scroll
-   section looks impressive in a demo and breaks keyboard navigation,
-   trackpad panning and mobile scroll in real use. Edge masks and
-   drag-to-scroll give it the same polish without taking the scroll away. */
-.gallery { position: relative; }
-.gallery__track {
-  /* proximity, not mandatory: mandatory re-snaps after every scroll write,
-     which clamps wheel and drag scrolling to a single card per gesture and
-     makes the rail feel stuck. Proximity still snaps when you come to rest. */
-  display: flex; gap: 26px; overflow-x: auto; scroll-snap-type: x proximity;
-  padding: 8px var(--gutter) 30px; margin-inline: calc(-1 * var(--gutter));
-  -webkit-overflow-scrolling: touch; scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+.family { display: grid; gap: clamp(30px, 5vw, 52px); grid-template-columns: 1fr; }
+@media (min-width: 1000px) {
+  .family { grid-template-columns: 1.04fr 0.96fr; align-items: start; }
 }
-.gallery__track::-webkit-scrollbar { display: none; }
-.js .gallery__track { cursor: grab; }
-.js .gallery__track.is-dragging { cursor: grabbing; }
-.js .gallery__track.is-dragging * { pointer-events: none; }
-/* Snapping is suspended mid-gesture (see initRails in main.js) and restored
-   once the rail comes to rest, so it lands on a card without fighting the
-   scroll on the way there. */
-.js .gallery__track.is-dragging,
-.js .gallery__track.is-freescroll,
-.js .quotes.is-dragging,
-.js .quotes.is-freescroll { scroll-snap-type: none; }
-.gallery__item {
-  scroll-snap-align: center; flex: 0 0 auto; width: 250px;
-  transition: transform 0.4s var(--ease-out-expo);
+.family__media { display: grid; gap: 24px; }
+@media (min-width: 640px) and (max-width: 999px) {
+  .family__media { grid-template-columns: 300px 1fr; align-items: start; gap: 30px; }
 }
-.gallery__item:hover { transform: translateY(-6px); }
-.gallery__item .device { max-width: 250px; }
-.gallery__cap { margin-top: 14px; text-align: center; }
-.gallery__cap b { display: block; font-weight: 700; letter-spacing: -0.01em; }
-.gallery__cap span { font-size: 0.86rem; color: var(--fg-muted); }
-.gallery__hint { text-align: center; margin-top: 6px; color: var(--fg-subtle); font-size: 0.84rem; }
 
-/* Light / dark switch for the screenshots (revealed by main.js) */
+/* A glass window the phone rises out of, rather than a phone cut in half */
+.family__shot {
+  position: relative; height: 384px; overflow: hidden;
+  display: flex; justify-content: center;
+  padding: 26px 26px 0;
+  border-radius: var(--r-2xl);
+  background: var(--glass-dark); border: 1px solid var(--forest-hair);
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .family__shot { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+}
+.family__shot .device { width: 100%; max-width: 212px; align-self: flex-start; }
+@media (min-width: 1000px) {
+  .family__shot { height: 440px; }
+  .family__shot .device { max-width: 248px; }
+}
+
+.family__inputs h3 { font-size: 1.06rem; letter-spacing: -0.02em; }
+.family__note { margin-top: 16px; color: var(--on-forest-mut); font-size: 0.92rem; }
+
+/* --- The plate splitter --------------------------------------------- */
+.split {
+  margin-top: clamp(24px, 3.5vw, 32px);
+  background: var(--glass-dark); border: 1px solid var(--forest-hair);
+  border-radius: var(--r-2xl); padding: 22px;
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .split { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+}
+.split__pot {
+  display: flex; gap: 14px; align-items: center;
+  padding-bottom: 16px; border-bottom: 1px dashed var(--forest-hair);
+}
+.split__pot-ico {
+  flex: none; width: 46px; height: 46px; display: grid; place-items: center;
+  border-radius: 14px; color: var(--lime);
+  background: rgba(181, 227, 77, 0.14); border: 1px solid rgba(181, 227, 77, 0.3);
+}
+.split__pot-ico svg { width: 25px; height: 25px; }
+.split__pot b { display: block; font-size: 1.02rem; letter-spacing: -0.02em; }
+.split__pot span { display: block; margin-top: 2px; font-size: 0.87rem; color: var(--on-forest-mut); }
+
+.split__arrow {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 13px 0 5px; color: var(--lime);
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.split__arrow svg { width: 17px; height: 17px; }
+
+.split__plates { display: grid; gap: 11px; }
+.split__plates li {
+  display: grid; grid-template-columns: minmax(76px, auto) 1fr auto;
+  gap: 12px; align-items: center;
+}
+.split__who b { display: block; font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
+.split__who i { display: block; font-style: normal; font-size: 0.73rem; color: var(--on-forest-sub); }
+.split__bar {
+  height: 9px; border-radius: 999px; overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+}
+.split__bar i {
+  display: block; height: 100%; width: var(--w, 50%); border-radius: 999px;
+  background: linear-gradient(90deg, var(--grad-c), var(--lime));
+}
+.split__amt { text-align: right; font-size: 0.92rem; font-weight: 700; white-space: nowrap; }
+.split__amt i {
+  display: block; font-style: normal; font-size: 0.73rem; font-weight: 600;
+  color: var(--on-forest-sub);
+}
+.split__foot { margin-top: 16px; color: var(--on-forest-mut); font-size: 0.88rem; }
+
+/* Narrow phones: the bar drops to its own row rather than being squeezed
+   to nothing between the name and the numbers. */
+@media (max-width: 479px) {
+  .split { padding: 18px; }
+  .split__plates li { grid-template-columns: 1fr auto; gap: 4px 10px; }
+  .split__who { grid-area: 1 / 1; }
+  .split__amt { grid-area: 1 / 2; }
+  .split__bar { grid-area: 2 / 1 / 3 / 3; }
+}
+
+/* ---------------------------------------------------------------------
+   15. Screenshot theme switch + horizontal rails
+   ------------------------------------------------------------------- */
 .shot-toggle {
   display: inline-flex; gap: 4px; margin-top: 22px;
   background: var(--bg-soft); border: 1px solid var(--border-2);
@@ -1269,38 +1295,11 @@ h2.h-section { font-size: clamp(1.9rem, 4vw, 2.9rem); letter-spacing: -0.038em; 
   background: var(--surface); color: var(--fg); border-color: var(--border);
 }
 
-/* ---------------------------------------------------------------------
-   15. Trust / credibility (forest band)
-   ------------------------------------------------------------------- */
-.trust-grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
-@media (min-width: 700px)  { .trust-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1060px) { .trust-grid { grid-template-columns: repeat(4, 1fr); } }
-.trust-card {
-  background: var(--glass-dark); border: 1px solid var(--forest-hair);
-  border-radius: var(--r-xl); padding: 28px;
-  transition: border-color 0.3s var(--ease), background 0.3s var(--ease),
-              transform 0.3s var(--ease-out-expo);
-}
-@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .trust-card { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-}
-.trust-card:hover {
-  border-color: rgba(181,227,77,0.45);
-  background: rgba(255,255,255,0.11);
-  transform: translateY(-5px);
-}
-.trust-card__ico {
-  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
-  background: var(--lime); color: var(--on-lime); margin-bottom: 18px;
-  transition: box-shadow 0.4s var(--ease), transform 0.4s var(--ease-spring);
-}
-.trust-card:hover .trust-card__ico {
-  box-shadow: 0 0 26px -2px rgba(181,227,77,0.85);
-  transform: scale(1.06);
-}
-.trust-card__ico svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
-.trust-card h3 { font-size: 1.18rem; letter-spacing: -0.02em; }
-.trust-card p { margin-top: 10px; color: var(--on-forest-mut); font-size: 0.98rem; }
+/* The testimonial rail's own drag styles live with it in section 17; this
+   is the one rule main.js needs on both ends of a gesture. */
+.js .quotes.is-dragging,
+.js .quotes.is-freescroll { scroll-snap-type: none; }
+.gallery__hint { text-align: center; margin-top: 6px; color: var(--fg-subtle); font-size: 0.84rem; }
 
 /* ---------------------------------------------------------------------
    15b. Founder — "Hey, I'm Zen"
@@ -1582,20 +1581,13 @@ html:not(.js) .price-toggle button.is-active { background: var(--surface); borde
   animation: zeb-bob 5s ease-in-out infinite;
 }
 
-/* --- Budget pose peeking beside the phone --------------------------- */
-.feature__media--zeb { position: relative; }
+/* --- Budget pose peeking beside the budget card's phone ------------- */
 .zeb-pose--budget {
-  position: absolute; z-index: 3; left: -3%; bottom: -4%;
-  width: clamp(120px, 15vw, 176px);
+  position: absolute; z-index: 2; right: -4px; bottom: 0;
+  width: clamp(88px, 11vw, 122px);
   filter: drop-shadow(0 18px 24px rgba(13,46,33,0.3));
   animation: zeb-bob 4.6s ease-in-out infinite;
-}
-@media (min-width: 900px) {
-  /* on the non-reversed budget row the phone sits left — tuck Zeb bottom-right */
-  .zeb-pose--budget { left: auto; right: -4%; bottom: -6%; }
-}
-@media (max-width: 560px) {
-  .zeb-pose--budget { width: 96px; left: -2%; bottom: -2%; }
+  pointer-events: none;
 }
 
 /* --- Live floating guide -------------------------------------------- */
@@ -1683,7 +1675,7 @@ html:not(.js) .price-toggle button.is-active { background: var(--surface); borde
   .cloud, .fan__slot .device { animation: none !important; }
   .pin.is-active .pin__ring { opacity: 0.4; }
   .price-card__meta .live { opacity: 1; }
-  .btn, .price-card, .quote, .plan, .gallery__item, .step, .trust-card {
+  .btn, .price-card, .quote, .plan, .bento__card, .flow__step {
     transition-duration: 0.001ms !important;
   }
 }

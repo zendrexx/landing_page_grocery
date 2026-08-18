@@ -8,11 +8,6 @@
 .gitignore
 .assetsignore
 
-# Screenshot masters: ~44 MB of 2580x5592 PNGs, source material only. The page
-# loads assets/screens/{light,dark}/*.webp, built from these by export_web.py.
-# Two of them (60_profile, 62_profile_appearance) show a real email address.
-assets/screens/v4
-
 # Mascot source art. The page only loads the .webp exports (plus face.png for
 # the favicon); these are the originals they were made from.
 assets/zeb/ai.png
