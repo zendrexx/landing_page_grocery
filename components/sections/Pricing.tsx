@@ -21,8 +21,8 @@ const PLANS = [
   {
     name: "Plus",
     tagline: "For serious weekly planners.",
-    monthly: "₱199",
-    annual: "₱166",
+    monthly: "₱249",
+    annual: "₱215",
     cta: "Choose Plus",
     featured: true,
     badge: "Most popular",
@@ -31,8 +31,8 @@ const PLANS = [
   {
     name: "Pro",
     tagline: "The full kitchen copilot.",
-    monthly: "₱299",
-    annual: "₱249",
+    monthly: "₱399",
+    annual: "₱333",
     cta: "Choose Pro",
     featured: false,
     feats: ["Everything in Plus", "Receipt scanning (snap to stock)", "Quick snap for groceries or pantry — AI spots the items", "Family kitchen — up to 4 people, portioned per person", "Shared pantry, list & household budget"],
