@@ -1,14 +1,33 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "zebite",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-24",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
   "observability": {
     "enabled": true
   },
-  "assets": {
-    "directory": "."
+  // Carried over from the static-site deploy, not yet reconciled: the
+  // WaitlistCounter class below lives in worker/index.js, which is no
+  // longer the deployed entry point now that "main" is open-next's
+  // generated worker. These bindings are inert until that class is
+  // ported into a Next.js route handler (or wired in via a custom
+  // open-next.config.ts worker override) — see worker/index.js.
+  "durable_objects": {
+    "bindings": [
+      { "name": "WAITLIST", "class_name": "WaitlistCounter" }
+    ]
   },
-  "compatibility_flags": [
-    "nodejs_compat"
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["WaitlistCounter"] }
   ]
 }

@@ -1,20 +1,20 @@
 <!--
-  Source for assets/og-image.png (1200x630) — the card that renders when the
-  site is shared. Dev-time only; `tools` is named in .assetsignore so this
-  never deploys.
+  Source for public/og.png (1200x630) — the card that renders when the site
+  is shared. Dev-time only; nothing under tools/ is part of the Next.js
+  build, so this never deploys on its own.
 
   Rebuild it by serving the repo root and screenshotting this page at exactly
-  1200x630:
+  1200x630, then copy the result into public/og.png:
 
     python -m http.server 8000
     chrome --headless --disable-gpu --hide-scrollbars --window-size=1200,630 \
-           --screenshot=assets/og-image.png \
+           --screenshot=public/og.png \
            http://127.0.0.1:8000/tools/og/og-image.html
 
-  Everything here is deliberately self-contained rather than importing
-  styles.css: this is a 1200x630 fixed canvas, so it wants none of the site's
-  responsive rules, and a change to the page must never silently reshape the
-  social card.
+  Everything here is deliberately self-contained rather than importing the
+  site's own CSS: this is a 1200x630 fixed canvas, so it wants none of the
+  site's responsive rules, and a change to the page must never silently
+  reshape the social card.
 -->
 <meta charset="utf-8" />
 <title>Zebite — OG image source</title>
@@ -109,7 +109,7 @@
 <div class="wrap">
   <div class="copy">
     <div class="brand">
-      <img src="../../assets/zeb/face.webp" alt="" />
+      <img src="../../public/zeb/face.webp" alt="" />
       <b>Ze<i>bite</i></b>
     </div>
 
@@ -128,10 +128,10 @@
 
   <div class="stage">
     <div class="device d1"><div class="screen"><span class="island"></span>
-      <img src="../../assets/screens/dark/40_pantry.webp" alt="" /></div></div>
+      <img src="../../public/screens/dark/40_pantry.webp" alt="" /></div></div>
     <div class="device d2"><div class="screen"><span class="island"></span>
-      <img src="../../assets/screens/dark/20_plan.webp" alt="" /></div></div>
+      <img src="../../public/screens/dark/20_plan.webp" alt="" /></div></div>
     <div class="device d3"><div class="screen"><span class="island"></span>
-      <img src="../../assets/screens/light/10_home.webp" alt="" /></div></div>
+      <img src="../../public/screens/light/10_home.webp" alt="" /></div></div>
   </div>
 </div>

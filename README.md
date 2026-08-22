@@ -4,183 +4,141 @@ Marketing landing page for **Zebite**, a Flutter app (iOS + Android) that plans 
 week of meals and groceries around three inputs: **what you have → what you want
 → your budget.**
 
-## Stack choice
+## Stack
 
-**Static HTML + CSS + vanilla JS — still no build step.** There is no bundler, no
-framework and no `package.json`; the repo root is what ships. Three animation
-libraries are *vendored* into `assets/vendor/` and loaded `defer`:
+**Next.js 15 (App Router) + React 19 + TypeScript + Tailwind CSS 3**, deployed to
+Cloudflare Workers via `@opennextjs/cloudflare`. This repo used to be a static
+HTML/CSS/vanilla-JS site (no bundler, no `package.json`); it has since been
+rebuilt on the framework above. Motion is `motion` (the Framer Motion
+successor) and smooth scroll is `lenis` — both plain npm dependencies now,
+not vendored `<script>` files.
 
-| File | Why |
-| --- | --- |
-| `gsap.min.js` | tweens + timelines |
-| `ScrollTrigger.min.js` | scroll-linked entrances and scrubbed depth |
-| `lenis.min.js` | smooth wheel scrolling |
-
-Vendored rather than CDN-linked so there is no extra DNS + TLS round trip before
-animation code can run, no third-party origin to go down, and Cloudflare caches
-them with everything else. To update one, re-download it from jsDelivr and strip
-the trailing `sourceMappingURL` comment (the `.map` files are not deployed).
-
-- `index.html` — all page sections + SEO / Open Graph / Twitter meta.
-- `styles.css` — design tokens (CSS variables) + every section, responsive,
-  reduced-motion, reduced-transparency.
-- `main.js` — motion system, price-intelligence map, mobile menu, pricing
-  toggle, FAQ, waitlist, analytics hooks.
-- `assets/` — real app screenshots, Zeb mascot art, self-hosted fonts, vendored
-  JS, OG image, and `assets/data/prices.json` (the map's city + price table).
-- `tools/map/` — the one dev-time script in the repo (see **The map**). Not
-  deployed; it's named in `.assetsignore`.
-
-### Motion
-
-Two rules hold throughout `main.js`:
-
-1. **The page is complete without any of it.** Entrance states are scoped to a
-   `.js` class set before first paint, so with JS off nothing is stuck at
-   `opacity: 0`. If GSAP fails to load, or the visitor prefers reduced motion,
-   `.motion-off` goes on `<html>` and every element is simply there.
-2. **One rAF loop.** Lenis is driven from `gsap.ticker`, so scroll smoothing,
-   scrubbed timelines and entrance tweens all advance on the same frame.
-
-Reveals are declarative: `data-anim="fade-up|fade|scale-in|blur-in|lines"`, with
-`data-anim-stagger` on a parent to sequence its children off one trigger. Scrubbed
-depth uses `data-depth`. Every entrance is `once: true` so its ScrollTrigger is
-killed after firing.
-
-Two traps worth knowing if you extend this:
-
-- **Never put a `filter` or `stroke-dasharray` resting state in CSS** for
-  something GSAP animates. `clearProps` removes the inline value and the CSS rule
-  silently reasserts itself, leaving the element blurred or blank. Set those from
-  JS instead — the icon draw-on and the blur entrances both do.
-- **`content-visibility: auto` was tried and removed.** An unrendered section
-  reports its `contain-intrinsic-size` placeholder rather than its real height,
-  so every ScrollTrigger below it computes against the wrong page length. It
-  changed the measured document height by ~3,000px.
-
-`.lines` headings are split into `<span class="line"><span>…</span></span>` **in
-the markup**, not at runtime — the text stays intact for screen readers,
-find-in-page and copy/paste. Lines, never characters.
+```
+app/            Root layout, page composition, global CSS, favicon (icon.svg)
+components/
+  hero/         Hero, the hand/phone composite, the rotating-word strip
+  sections/     One file per landing-page section (see "Page structure")
+  site/         Nav, custom cursor, Lenis smooth-scroll mount
+  ui/           Reveal (scroll-in animation), DeviceFrame (phone mockup)
+  brand/        ZebMascot (crops Zeb's art to its opaque bounding box)
+lib/            content.ts (copy/config) and analytics.ts (CTA tracking)
+public/         Everything Next.js serves as-is: screenshots, mascot art,
+                founder photo, og.png
+assets/         Dev-tooling inputs only — not shipped. See "Dev tools" below.
+tools/          Dev-time scripts (map generator, OG image source). Not part
+                of the Next.js build.
+worker/         A Cloudflare Worker + Durable Object for the waitlist
+                counter — written for the old static deploy, not yet ported
+                into this app. See "The waitlist cap".
+```
 
 ## Run it
 
-It's a static page — just open `index.html`, or serve the folder:
-
 ```bash
-npx serve .        # or: python -m http.server 8000
+npm install
+npm run dev       # next dev, with the OpenNext Cloudflare dev shim initialized
+npm run build      # next build
+npm run preview    # opennextjs-cloudflare build + preview (runs in workerd)
+npm run deploy     # opennextjs-cloudflare build + wrangler deploy
 ```
 
-## Assets
+## Page structure
 
-Product imagery is **real app screenshots**, framed in iPhone-15-Pro-style
-device mockups drawn in CSS (`.device`). Every screen ships in both themes:
+Rendered in `app/page.tsx`, in this order:
 
-- `assets/screens/v4/{light,dark}/` — the masters, 2580 × 5592 straight off a
-  device (see that folder's own README). **Source only — don't deploy them.**
-- `assets/screens/{light,dark}/*.webp` — what the page actually loads, 840 ×
-  1801, ~50 KB each. Built by `python assets/screens/v4/export_web.py`, which
-  crops the Android status/gesture bars off and extends the first and last row
-  into the bezel padding, so a dark shot never meets a cream bezel.
+| Component | Section | Carries |
+| --- | --- | --- |
+| `Hero` | `#hero` | The promise, the animated wordmark, the hand/phone composite |
+| `HowItWorks` | `#how` | 3-step flow strip + the pinned bento grid (pantry, meals, budget, photo-to-pantry, mini-features) |
+| `Family` | `#family` | One pot → four plates, portioned per person |
+| `Prices` | `#prices` | The generated Philippines price-intelligence map |
+| `Founder` | `#about` | "Hey, I'm Zen" |
+| `Testimonials` | — | Horizontal card rail |
+| `Pricing` | `#pricing` | Free / Plus / Pro, monthly ↔ annual toggle |
+| `Faq` | `#faq` | Six accordion questions |
+| `GetAccess` | `#get` | Waitlist form + store badges |
+| `Footer` | — | Product/company links, social |
 
-| File | Screen |
-| --- | --- |
-| `10_home` | Today's plan, progress, daily targets |
-| `12_budget_plan` | Weekly ₱ budget, days + meals per day |
-| `21_plan_recipe` | Meal plan + expanded AI recipe |
-| `22_cook_sheet` | "Start cooking?" — what it deducts |
-| `30_grocery` | Grocery list, "Within budget ✓" |
-| `40_pantry` | Categorized pantry, expiry / low-stock |
-| `41_add_to_pantry` | Snap to stock (receipt / groceries) |
-| `51_insights_charts` | Spending + nutrition charts, food waste |
-| `71_zeb_chat` | Ask Zeb — the in-app assistant |
-| `80_generate` | "What the AI will use" before generating |
+Product screenshots are real app captures, framed by `components/ui/DeviceFrame.tsx`
+(an iPhone-style mockup sized off the screenshot's own dimensions — no fixed
+CSS device). Each screen ships as a single `.webp` under `public/screens/`;
+`HowItWorks` and `Family` always render the **dark**-theme captures (the
+section itself is a dark graphite band), and the hero phone always renders
+the **light**-theme home screen (it sits in a light `bg-paper` section). There
+is no light/dark switcher on the page — a scheme is picked per section, once,
+to match that section's own background.
 
-Screenshots follow the visitor's `prefers-color-scheme` on their own (each is a
-`<picture class="shot">` with a dark `<source>`); the Light / Dark switch in the
-gallery pins one, by flipping `source.media` rather than rewriting `src`. To add
-a screen: add its name to `SCREENS` in `export_web.py`, re-run it, and copy an
-existing `<picture class="shot">` block.
+## Dev tools
 
-`assets/logo.svg` / `assets/favicon.svg` are the leaf-in-forest-tile lockup.
-`assets/og-image.png` is the brand forest social artwork (1200×630).
+Two scripts under `tools/` support the page but aren't part of the Next.js
+build or deploy:
 
-## The map
+- **`tools/map/build-map.mjs`** — regenerates the `#prices` archipelago (real
+  Mercator-projected coastline + real lat/lng pins, from
+  `tools/map/ph-coastline.json` and `assets/data/prices.json`). The SVG
+  currently hardcoded in `components/sections/Prices.tsx` was extracted
+  byte-for-byte from this script's output. **Note:** the script still targets
+  the old `index.html` / `main.js` files from the static-site era, which no
+  longer exist in this repo — it needs its write targets repointed at
+  `Prices.tsx` (or its `--print` mode used to dump fresh markup for manual
+  copy-in) before it can be run again.
+- **`tools/og/og-image.html`** — source for `public/og.png` (1200×630, the
+  Open Graph / Twitter card). Self-contained HTML, rebuilt by serving the
+  repo root and screenshotting it headless at exactly 1200×630 (command in
+  the file's own header comment), then copying the result to `public/og.png`.
 
-The `#prices` archipelago is **generated, not drawn**. It used to be hand-drawn
-SVG with pins nudged until they looked right, and they weren't: Baguio sat out
-near Agoo, Metro Manila somewhere around Tarlac. Now both the coastline and
-every pin come out of one Mercator projection, so a pin can't drift off its
-province.
+`assets/fonts/` (two self-hosted `.woff2` files) exists only because
+`tools/og/og-image.html` is a standalone page that can't use `next/font` —
+the live site loads Plus Jakarta Sans through `next/font/google` instead.
 
-| Input | What it is |
-| --- | --- |
-| `tools/map/ph-coastline.json` | Natural Earth **1:10m** Philippines, outer rings, public domain |
-| `assets/data/prices.json` | the city list — real lat/lng — plus the figures each pin shows |
+## The waitlist cap
 
-```bash
-node tools/map/build-map.mjs          # rewrite the generated regions
-node tools/map/build-map.mjs --check  # non-zero exit if they're stale
-node tools/map/build-map.mjs --print  # dump to stdout, touch nothing
-```
+The `#get` section's promise — "send your email and I'll send you the app
+myself" for the first *N* signups, plain waitlist copy after that — is meant
+to be backed by a real counter, not a fake countdown.
 
-It only ever writes between `map:<name>:start` / `map:<name>:end` markers in
-`index.html` and `main.js` — islands, Luzon, routes, pins, the `<desc>`, the
-projection constants and the inline fallback table. **Don't hand-edit between
-those markers.** It also refuses to finish if a city doesn't land on an island,
-which is the check the old hand-placed version never had.
-
-### Filling in the data
-
-Everything lives in `assets/data/prices.json`:
-
-- **Change a number** — edit it. The page `fetch`es this file at runtime, so a
-  price change is a deploy of one JSON file, no rebuild.
-- **Add a city** — add an entry with real `lat`/`lng`, put its key in `order`,
-  optionally add a `routes` pair, then re-run the script. Pins are markup, so
-  this step is what actually puts one on the map; a city the JSON knows about
-  but the map doesn't gets a console warning telling you to re-run.
-- **Point at a real API** — swap the `fetch` URL in `initPriceMap`. Same shape,
-  same keys, no other changes.
-- **`label.dx` / `label.dy` / `label.anchor`** nudge a pin's text; the touch
-  target sizes itself to the gap between neighbouring pins.
-
-1:10m rather than the ~6× lighter 1:50m because at 50m the generalized west
-coast of Luzon is drawn east of where it really is — far enough that Baguio's
-true coordinates land in the sea. The detail is spent on accuracy and paid back
-by Douglas–Peucker simplification (`SIMPLIFY`, in viewBox px) afterwards.
-
-Two things that bit during the rewrite, worth knowing before you touch the SVG:
-
-- **Never scale a pin `<g>` about a GSAP `svgOrigin`.** It leaves a residual
-  translate the size of the group's bounding box — and the box includes the
-  label, so "Pangasinan" threw its pin ~75 units out to sea. Scale
-  `.pin__dot / .pin__ring / .pin__shadow` instead; they each carry
-  `transform-box: fill-box`.
-- **The dot pattern is in user units**, so it scales down with the viewBox and
-  on a phone the archipelago dissolved into grey fuzz. What carries the shape
-  at small sizes is the flat `.map-land` silhouette under the dots — and its
-  colour is also a `fill=""` attribute on the element, because a `<use>` with
-  no fill inherits *black*.
+- `components/sections/GetAccess.tsx` already calls `GET /api/waitlist/status`
+  and `POST /api/waitlist/join` (alongside a Web3Forms submission for the
+  email itself), and degrades to static fallback copy if those calls fail.
+- The counter's actual implementation, `WaitlistCounter` (a Cloudflare
+  Durable Object), lives in `worker/index.js` — written for the previous
+  static-site deploy, where a Worker served both the static assets and these
+  two routes directly.
+- `wrangler.jsonc` still declares the `WAITLIST` Durable Object binding for
+  it, but `main` now points at OpenNext's generated Worker
+  (`.open-next/worker.js`), so `worker/index.js` is currently **not** the
+  deployed entry point — the `/api/waitlist/*` routes have no live handler
+  yet. Porting the logic in `worker/index.js` into a Next.js route handler
+  (or wiring a custom worker override via `open-next.config.ts`) is
+  outstanding work, not a bug in the page itself.
+- **Change the cap** — edit `CAP` in `worker/index.js` once it's wired back
+  up.
+- **This only gates the on-page copy.** Claiming a direct-access spot doesn't
+  send anything by itself — the emails Web3Forms delivers still get added to
+  the Google Play closed-testing tester list by hand.
 
 ## Editing the essentials
 
-- **Brand palette / type** — `:root` tokens at the top of `styles.css`
-  (`--cream`, `--ink`, `--lime`, forest gradient, radii, shadows).
-- **Pricing** — plain markup in the `#pricing` section of `index.html`; the
-  monthly/annual figures live in `data-monthly` / `data-annual` attributes.
-- **CTAs / links** — store badges and "Get early access" buttons point to
-  `#get` (the waitlist). Swap in real App Store / Google Play URLs when ready.
-- **Waitlist endpoint** — `main.js` → `data-waitlist` handler has a marked
-  `TODO` where you POST the email to your list provider.
-- **OG / canonical URLs** — replace the `https://aigroceryplanner.app/`
-  placeholders in `<head>` (and make `og:image` an absolute URL in production).
+- **Copy** — `lib/content.ts` (hero copy, nav links, contact email). Section-
+  specific copy (FAQ items, pricing plans, family example, etc.) lives as
+  plain arrays/objects at the top of each file in `components/sections/`.
+- **Brand palette / type / radii** — design tokens are defined twice, kept in
+  sync by hand: `tailwind.config.ts` (Tailwind theme extension) and the
+  `:root` custom properties at the top of `app/globals.css`.
+- **Pricing** — the `PLANS` array in `components/sections/Pricing.tsx`.
+- **Waitlist endpoint** — `components/sections/GetAccess.tsx`; swap the
+  Web3Forms `access_key` there, or replace the call entirely, once you have a
+  real list provider. See "The waitlist cap" above for the counter side.
+- **OG image / canonical URL / metadata** — `app/layout.tsx` (`metadataBase`,
+  Open Graph, Twitter card). Favicon is `app/icon.svg`.
 
 ## Analytics
 
-`main.js` defines a `window.track(event, props)` stub and auto-fires
-`cta_click` for every `[data-cta]` element, plus `pricing_toggle` and
-`waitlist_signup`. Drop your provider snippet at the marked spot in
-`index.html <head>` and forward `track` to it (GA4 `gtag`, Plausible, PostHog…).
+`lib/analytics.ts` exports `trackCTA(name, props)`, which forwards to
+`window.zebiteAnalytics` if it exists (a no-op, logged to the console in dev,
+otherwise). Drop your provider's snippet in the marked slot in
+`app/layout.tsx` and assign `window.zebiteAnalytics` to forward events to it
+(GA4 `gtag`, Plausible, PostHog, …).
 
 ## Honesty note
 
@@ -188,21 +146,13 @@ Every feature named on this page is real and shipping. There is **no** recipe
 sharing / social feed, **no** AI calorie *guessing* (targets are computed via
 Mifflin-St Jeor → TDEE → goal), **no** barcode scanning, wearables, voice
 assistant, or store-route optimization. The app has community **prices**, not
-community recipes. Testimonials are clearly marked placeholder copy — no names,
-star counts, or download numbers are invented.
+community recipes. Testimonials are clearly marked placeholder copy — no
+names, star counts, or download numbers are invented.
 
-**The price-intelligence map (`#prices`) still shows placeholder figures.** The
-prices, confidence scores, contributor counts and "updated N mins ago" values
-come from `assets/data/prices.json` and are not wired to the pricing backend.
-The underlying claim — that budgets ride on crowdsourced local prices — is true
-and is made elsewhere on the page; the map illustrates it, it does not report
-it. Map coverage is Luzon, and the pins say so: the rest of the archipelago is
-drawn but unpinned.
-
-The `Sample data — illustrative` line that used to sit under the map was
-removed on the owner's instruction (2026-08-01). **The figures above it did not
-become real when it went.** The mechanism is still wired and one uncomment away:
-the commented-out `<p class="prices__disclaimer">` in `index.html`, driven by
-`data-state`, which `main.js` flips to `live` only when `prices.json` says
-`"source": "live"`. Restore it, or set `source` to `live` once the numbers are
-genuinely coming from the backend — those are the two honest end states.
+**The price-intelligence map (`#prices`) still shows placeholder figures.**
+The prices, confidence scores, contributor counts and "updated N mins ago"
+values in `components/sections/Prices.tsx` are illustrative, not wired to the
+pricing backend. The underlying claim — that budgets ride on crowdsourced
+local prices — is true and is made elsewhere on the page; the map illustrates
+it, it does not yet report it live. Map coverage is Luzon, and the pins say
+so: the rest of the archipelago is drawn but unpinned.

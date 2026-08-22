@@ -4,3 +4,11 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# Next.js / open-next
+node_modules
+.next
+.open-next
+next-env.d.ts
+tsconfig.tsbuildinfo
+cloudflare-env.d.ts
