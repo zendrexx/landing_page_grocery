@@ -12,7 +12,7 @@ const DWELL = 2400;
  * ("DIGITAL EXPERIENCES"), so reusing its exact clamp is a safe, conservative
  * fit rather than a guess — it was already sized for a harder case than this.
  */
-const WORD_SIZE = "clamp(1.75rem, 4.4vw, 3.5rem)";
+const WORD_SIZE = "clamp(1.5rem, 4.4vw, 3.5rem)";
 
 /**
  * The rotating word in the hero statement. Ported from Zhevion's

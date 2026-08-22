@@ -111,12 +111,12 @@ export function Hero() {
       <div className="relative mx-auto flex min-h-[100svh] max-w-content flex-col px-[var(--page-x)]">
         <motion.p
           {...rise(0.2)}
-          className="eyebrow pt-[clamp(96px,12vh,132px)] text-ink-faint"
+          className="eyebrow hidden pt-[clamp(96px,12vh,132px)] text-ink-faint md:block"
         >
           {HERO.eyebrow}
         </motion.p>
 
-        <h1 className="mt-[clamp(12px,2.5vh,28px)]">
+        <h1 className="mt-[clamp(72px,11vh,132px)] md:mt-[clamp(12px,2.5vh,28px)]">
           <span className="sr-only">Zebite</span>
           <span
             ref={rowRef}
@@ -145,41 +145,45 @@ export function Hero() {
 
         {/* Full width on mobile; from md up the hand shares the row, so it
             caps at 62%. */}
-        <div className="relative z-30 mt-[clamp(36px,6vh,88px)] max-w-[76%] md:max-w-[min(560px,62%)]">
+        <div className="relative z-30 mt-[clamp(20px,3.5vh,88px)] max-w-[76%] md:max-w-[min(560px,62%)]">
           <p className="sr-only">{HERO.spoken}</p>
 
           <div aria-hidden>
             <motion.p
               {...rise(0.7)}
-              className="text-[clamp(1rem,1.9vw,1.35rem)] font-medium text-ink-soft"
+              className="text-[clamp(0.875rem,1.9vw,1.35rem)] font-medium text-ink-soft"
             >
               {HERO.lead}
             </motion.p>
 
-            <motion.div {...rise(0.78)} className="mt-2">
+            <motion.div {...rise(0.78)} className="mt-1.5 md:mt-2">
               <WordCycle />
             </motion.div>
 
             <motion.p
               {...rise(0.86)}
-              className="mt-4 text-[clamp(1rem,1.9vw,1.35rem)] font-medium text-ink-soft"
+              className="mt-3 text-[clamp(0.875rem,1.9vw,1.35rem)] font-medium text-ink-soft md:mt-4"
             >
               {HERO.tail}
             </motion.p>
           </div>
         </div>
 
+        {/* The hand+phone: on mobile it's the focal visual, sized up and
+            given the freed-up middle space; from md up it reverts to the
+            absolute bottom-right corner photo, sharing the row with the
+            62%-capped text column above. */}
+        <HeroHand />
+
         {/* Baseline row — scroll cue only, sitting where the CTA used to
             anchor the row, still capped to the same 62% column so it never
             runs under the hand. */}
         <motion.div
           {...rise(1.2)}
-          className="relative z-30 mt-auto flex items-end justify-start pb-[clamp(22px,5vh,44px)] pt-[clamp(28px,6vh,64px)] md:max-w-[62%]"
+          className="relative z-30 mt-auto flex items-end justify-start pb-[clamp(16px,4vh,44px)] pt-[clamp(16px,4vh,64px)] md:max-w-[62%]"
         >
           <ScrollCue reduce={!!reduce} />
         </motion.div>
-
-        <HeroHand />
       </div>
         </motion.section>
       </div>

@@ -14,7 +14,7 @@ export function HeroHand() {
 
   return (
     <div
-      className="pointer-events-none absolute bottom-0 right-0 z-20"
+      className="pointer-events-none relative z-20 mt-[clamp(4px,1.5vh,16px)] flex justify-end md:absolute md:inset-auto md:bottom-0 md:right-0 md:mt-0 md:block"
       aria-hidden
     >
       <motion.div
@@ -31,7 +31,7 @@ export function HeroHand() {
         }
       >
         <div
-          className="relative aspect-[185/281] w-[clamp(150px,46vw,220px)] md:h-[50svh] md:w-auto lg:h-[68svh]"
+          className="relative aspect-[185/281] w-[clamp(230px,74vw,320px)] md:h-[50svh] md:w-auto lg:h-[68svh]"
         >
           <Image
             src="/hero/hand-phone.png"
