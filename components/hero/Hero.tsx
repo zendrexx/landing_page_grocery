@@ -121,7 +121,7 @@ export function Hero() {
           <span
             ref={rowRef}
             aria-hidden
-            className="flex w-full justify-between font-extrabold leading-[0.86] text-ink"
+            className="flex w-full max-w-[78%] justify-between font-extrabold leading-[0.86] text-ink md:max-w-none"
             style={{ fontSize: wordmarkSize ?? FALLBACK_SIZE }}
           >
             {LETTERS.map((letter, i) => (
@@ -145,7 +145,7 @@ export function Hero() {
 
         {/* Full width on mobile; from md up the hand shares the row, so it
             caps at 62%. */}
-        <div className="relative z-30 mt-[clamp(36px,6vh,88px)] max-w-full md:max-w-[min(560px,62%)]">
+        <div className="relative z-30 mt-[clamp(36px,6vh,88px)] max-w-[76%] md:max-w-[min(560px,62%)]">
           <p className="sr-only">{HERO.spoken}</p>
 
           <div aria-hidden>

@@ -31,7 +31,7 @@ export function HeroHand() {
         }
       >
         <div
-          className="relative aspect-[185/281] w-[clamp(210px,70vw,290px)] md:h-[50svh] md:w-auto lg:h-[68svh]"
+          className="relative aspect-[185/281] w-[clamp(150px,46vw,220px)] md:h-[50svh] md:w-auto lg:h-[68svh]"
         >
           <Image
             src="/hero/hand-phone.png"
