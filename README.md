@@ -27,9 +27,10 @@ public/         Everything Next.js serves as-is: screenshots, mascot art,
 assets/         Dev-tooling inputs only — not shipped. See "Dev tools" below.
 tools/          Dev-time scripts (map generator, OG image source). Not part
                 of the Next.js build.
-worker/         A Cloudflare Worker + Durable Object for the waitlist
-                counter — written for the old static deploy, not yet ported
-                into this app. See "The waitlist cap".
+worker/waitlist-do/
+                A standalone Cloudflare Worker that exists only to export
+                the WaitlistCounter Durable Object class (see "The
+                waitlist cap"). Deployed separately from the main app.
 ```
 
 ## Run it
@@ -40,7 +41,11 @@ npm run dev       # next dev, with the OpenNext Cloudflare dev shim initialized
 npm run build      # next build
 npm run preview    # opennextjs-cloudflare build + preview (runs in workerd)
 npm run deploy     # opennextjs-cloudflare build + wrangler deploy
+npm run deploy:waitlist-do  # deploy the waitlist counter's own Worker (see below)
 ```
+
+`postinstall` runs `cf-typegen` automatically (regenerates `cloudflare-env.d.ts` from
+`wrangler.jsonc`'s bindings), so `env.WAITLIST` etc. typecheck without a manual step.
 
 ## Page structure
 
@@ -97,22 +102,32 @@ The `#get` section's promise — "send your email and I'll send you the app
 myself" for the first *N* signups, plain waitlist copy after that — is meant
 to be backed by a real counter, not a fake countdown.
 
-- `components/sections/GetAccess.tsx` already calls `GET /api/waitlist/status`
-  and `POST /api/waitlist/join` (alongside a Web3Forms submission for the
-  email itself), and degrades to static fallback copy if those calls fail.
-- The counter's actual implementation, `WaitlistCounter` (a Cloudflare
-  Durable Object), lives in `worker/index.js` — written for the previous
-  static-site deploy, where a Worker served both the static assets and these
-  two routes directly.
-- `wrangler.jsonc` still declares the `WAITLIST` Durable Object binding for
-  it, but `main` now points at OpenNext's generated Worker
-  (`.open-next/worker.js`), so `worker/index.js` is currently **not** the
-  deployed entry point — the `/api/waitlist/*` routes have no live handler
-  yet. Porting the logic in `worker/index.js` into a Next.js route handler
-  (or wiring a custom worker override via `open-next.config.ts`) is
-  outstanding work, not a bug in the page itself.
-- **Change the cap** — edit `CAP` in `worker/index.js` once it's wired back
-  up.
+- `components/sections/GetAccess.tsx` calls `GET /api/waitlist/status` and
+  `POST /api/waitlist/join` (alongside a Web3Forms submission for the email
+  itself), and degrades to static fallback copy if those calls fail.
+- Those routes are Next.js route handlers —
+  [app/api/waitlist/status/route.ts](app/api/waitlist/status/route.ts) and
+  [app/api/waitlist/join/route.ts](app/api/waitlist/join/route.ts) — that
+  forward to the `WaitlistCounter` Durable Object via the `WAITLIST`
+  binding (`env.WAITLIST`, from `getCloudflareContext()`).
+- `WaitlistCounter` itself lives in
+  [worker/waitlist-do/index.js](worker/waitlist-do/index.js), deployed as
+  its **own** Worker (`zebite-waitlist-do`), not inside the main app's
+  Worker. That split exists because OpenNext regenerates the app's Worker
+  entry point (`.open-next/worker.js`) on every build, so it can't own a
+  Durable Object class itself — `wrangler.jsonc`'s `WAITLIST` binding
+  points at the other Worker cross-script via `script_name`, per
+  [Cloudflare's docs](https://developers.cloudflare.com/durable-objects/reference/durable-objects-migrations/#durable-object-migrations-in-wrangler).
+- **First deploy / after changing the class**: run
+  `npm run deploy:waitlist-do` (deploys `zebite-waitlist-do` and applies
+  its migration) before or after `npm run deploy` — order between the two
+  doesn't matter once `zebite-waitlist-do` exists.
+- **Change the cap** — edit `CAP` in `worker/waitlist-do/index.js`, then
+  `npm run deploy:waitlist-do`.
+- **Local dev** — the Durable Object binding isn't available under `next
+  dev`; `/api/waitlist/*` calls fail locally and the page falls back to its
+  static copy, same as production would if the DO Worker weren't deployed.
+  Use `npm run preview` (runs in workerd) to exercise it locally instead.
 - **This only gates the on-page copy.** Claiming a direct-access spot doesn't
   send anything by itself — the emails Web3Forms delivers still get added to
   the Google Play closed-testing tester list by hand.

@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "zebite-waitlist-do",
+  "main": "index.js",
+  "compatibility_date": "2026-07-24",
+  "durable_objects": {
+    "bindings": [
+      { "name": "WAITLIST", "class_name": "WaitlistCounter" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["WaitlistCounter"] }
+  ]
+}

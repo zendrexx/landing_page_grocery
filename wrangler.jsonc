@@ -16,18 +16,15 @@
   "observability": {
     "enabled": true
   },
-  // Carried over from the static-site deploy, not yet reconciled: the
-  // WaitlistCounter class below lives in worker/index.js, which is no
-  // longer the deployed entry point now that "main" is open-next's
-  // generated worker. These bindings are inert until that class is
-  // ported into a Next.js route handler (or wired in via a custom
-  // open-next.config.ts worker override) — see worker/index.js.
+  // The WaitlistCounter class lives in its own Worker
+  // (worker/waitlist-do/), not in this one — OpenNext regenerates this
+  // Worker's entry point on every build, so it can't own a Durable
+  // Object class itself. `script_name` binds cross-script to that
+  // Worker instead. Deploy/redeploy it with `npm run deploy:waitlist-do`
+  // (it owns the class's migrations, so none are declared here).
   "durable_objects": {
     "bindings": [
-      { "name": "WAITLIST", "class_name": "WaitlistCounter" }
+      { "name": "WAITLIST", "class_name": "WaitlistCounter", "script_name": "zebite-waitlist-do" }
     ]
-  },
-  "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["WaitlistCounter"] }
-  ]
+  }
 }

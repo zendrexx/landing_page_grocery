@@ -9,11 +9,12 @@ import { CONTACT } from "@/lib/content";
 /**
  * Waitlist form, ported from the static build's main.js. Submits to
  * Web3Forms (email capture, no backend needed) and, once that confirms,
- * claims a spot from /api/waitlist/join — the Cloudflare Durable Object
- * counter in worker/index.js. If that Worker isn't deployed alongside this
- * app yet, both /api/waitlist/* calls fail silently and the static
- * fallback copy below stands, same "works without it" rule the rest of
- * the site follows.
+ * claims a spot from /api/waitlist/join — a Next.js route handler backed
+ * by the WaitlistCounter Durable Object (see worker/waitlist-do/ and
+ * README.md, "The waitlist cap"). If that DO Worker isn't deployed
+ * alongside this app, both /api/waitlist/* calls fail silently and the
+ * static fallback copy below stands, same "works without it" rule the
+ * rest of the site follows.
  */
 export function GetAccess() {
   const formRef = useRef<HTMLFormElement>(null);
