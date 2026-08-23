@@ -6,7 +6,10 @@
  * (targets are Mifflin-St Jeor -> TDEE -> goal), no barcode scanning.
  */
 
-const CONTACT_EMAIL = "adversalozen8@gmail.com";
+// Kept in sync with lib/content.ts in landing_page_zhevion, which is the
+// studio-wide source of truth for this address — every /legal doc on
+// zhevion.com promises this same inbox.
+const CONTACT_EMAIL = "zebite@zhevion.com";
 
 export const CONTACT = {
   email: CONTACT_EMAIL,

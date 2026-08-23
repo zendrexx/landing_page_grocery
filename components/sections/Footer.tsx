@@ -53,6 +53,7 @@ export function Footer() {
               <li><a href="https://zendrex.zhevion.com" target="_blank" rel="noreferrer" className="text-cream/85 hover:text-cream">Portfolio</a></li>
               <li><a href="https://zhevion.com/legal/zebite/privacy" target="_blank" rel="noreferrer" className="text-cream/85 hover:text-cream">Privacy Policy</a></li>
               <li><a href="https://zhevion.com/legal/zebite/terms" target="_blank" rel="noreferrer" className="text-cream/85 hover:text-cream">Terms of Service</a></li>
+              <li><a href="https://zhevion.com/legal/zebite/delete-data" target="_blank" rel="noreferrer" className="text-cream/85 hover:text-cream">Delete My Data</a></li>
             </ul>
           </div>
         </div>
@@ -63,6 +64,8 @@ export function Footer() {
             <a href="https://zhevion.com/legal/zebite/privacy" target="_blank" rel="noreferrer" className="hover:text-cream">Privacy</a>
             {" · "}
             <a href="https://zhevion.com/legal/zebite/terms" target="_blank" rel="noreferrer" className="hover:text-cream">Terms</a>
+            {" · "}
+            <a href="https://zhevion.com/legal/zebite/delete-data" target="_blank" rel="noreferrer" className="hover:text-cream">Delete data</a>
           </span>
         </div>
       </div>
