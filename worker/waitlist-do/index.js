@@ -20,7 +20,7 @@
    name and rebind (here and in the root wrangler.jsonc).
    ===================================================================== */
 
-const CAP = 100;
+const CAP = 30;
 
 export class WaitlistCounter {
   constructor(state) {

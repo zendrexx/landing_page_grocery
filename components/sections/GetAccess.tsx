@@ -94,7 +94,7 @@ export function GetAccess() {
             </p>
           ) : (
             <form ref={formRef} onSubmit={onSubmit} className="mt-8" noValidate>
-              <input type="hidden" name="access_key" value="29da3b00-ef0b-4c9a-b5c0-a8db62d20e5f" />
+              <input type="hidden" name="access_key" value="7e815f4a-d060-4d2e-ab8c-e89ed28aab88" />
               <input type="hidden" name="subject" value="New waitlist signup — Zebite" />
               <input type="hidden" name="from_name" value="Zebite waitlist" />
               <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} aria-hidden />
