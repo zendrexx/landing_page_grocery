@@ -6,8 +6,9 @@
    tiny Worker exists only to export the class; the root wrangler.jsonc
    binds to it cross-script via `script_name`. The Next.js app talks to
    the DO through app/api/waitlist/status and app/api/waitlist/join
-   (using the WAITLIST binding) — this file's own fetch handler is never
-   hit directly.
+   (using the WAITLIST binding). This file's own default export also
+   forwards straight to the DO (id "global"), so its Workers.dev URL is
+   directly curl-able for debugging.
 
    The counter lives in a Durable Object so the increment in /join is
    atomic even under concurrent signups — a plain KV read-then-write
@@ -56,7 +57,11 @@ export class WaitlistCounter {
 }
 
 export default {
-  async fetch() {
-    return new Response('Not found', { status: 404 });
+  // Forwards to the DO instance so this worker's own URL is reachable
+  // directly (e.g. for the temporary /reset endpoint above).
+  async fetch(request, env) {
+    const id = env.WAITLIST.idFromName('global');
+    const stub = env.WAITLIST.get(id);
+    return stub.fetch(request);
   },
 };
