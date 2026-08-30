@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
+import { Suspense } from "react";
 import { FeedbackFormSection } from "@/components/sections/FeedbackForm";
+import { PublicBoard } from "@/components/sections/PublicBoard";
 import { CONTACT } from "@/lib/content";
 
 /**
@@ -78,9 +80,18 @@ export default function FeedbackPage() {
             <FeedbackFormSection />
           </div>
 
-          {/* The only mention of the in-app board, and it sits below the form
-              on purpose: it is informational, not a redirect. Nothing here
-              can show the board — it is authenticated-only. */}
+          {/* Streamed: the form is this page's job and must paint straight
+              away, so a slow or unreachable board never delays it. A null
+              fallback because there is no honest skeleton for content that
+              may legitimately not exist. */}
+          <Suspense fallback={null}>
+            <PublicBoard />
+          </Suspense>
+
+          {/* Sits below the board on purpose: having just read what other
+              people asked for, the way to join in is the app. The board above
+              is anonymised — see PublicBoard — so this is also where anyone
+              who wants their name on a post learns where to post it. */}
           <Reveal>
             <div className="mt-10 rounded-card border border-ink-rule bg-paper-deep p-6">
               <h2 className="text-sm font-extrabold text-ink">

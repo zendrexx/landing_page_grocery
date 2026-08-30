@@ -50,6 +50,7 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm">
               <li><a href="#about" className="text-cream/85 hover:text-cream">About</a></li>
               <li><a href={`mailto:${CONTACT.email}`} className="text-cream/85 hover:text-cream">Contact</a></li>
+              <li><a href="/feedback" className="text-cream/85 hover:text-cream">Send feedback</a></li>
               <li><a href="https://zendrex.zhevion.com" target="_blank" rel="noreferrer" className="text-cream/85 hover:text-cream">Portfolio</a></li>
               <li><a href="https://zhevion.com/legal/zebite/privacy" target="_blank" rel="noreferrer" className="text-cream/85 hover:text-cream">Privacy Policy</a></li>
               <li><a href="https://zhevion.com/legal/zebite/terms" target="_blank" rel="noreferrer" className="text-cream/85 hover:text-cream">Terms of Service</a></li>

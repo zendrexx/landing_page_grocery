@@ -16,6 +16,22 @@
   "observability": {
     "enabled": true
   },
+  // Read by /feedback to show the public feedback board — see
+  // lib/feedback-board.ts. OpenNext copies every string in the Worker env
+  // into process.env at startup (dist/cli/templates/init.js,
+  // populateProcessEnv), so these arrive as process.env.SUPABASE_*.
+  //
+  // The anon key is committed deliberately: it is Supabase's *publishable*
+  // key, RLS is the actual protection, and the Zebite app already ships this
+  // exact string to every user who installs it. Committing it is the same
+  // exposure, and it keeps deploying to a single `npm run deploy` with no
+  // secret to set up first.
+  //
+  // The service_role key must NEVER appear here — it bypasses RLS entirely.
+  "vars": {
+    "SUPABASE_URL": "https://mvdupfxkczgbyavlefsg.supabase.co",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12ZHVwZnhrY3pnYnlhdmxlZnNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMDU4NDEsImV4cCI6MjA5OTU4MTg0MX0.3pILEThQydJIeKnTs0cXYoPe-GhNhtQrdk2IN-qZ8G0"
+  },
   // The WaitlistCounter class lives in its own Worker
   // (worker/waitlist-do/), not in this one — OpenNext regenerates this
   // Worker's entry point on every build, so it can't own a Durable
