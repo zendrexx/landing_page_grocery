@@ -87,7 +87,7 @@ export function Family() {
             imgWidth={860}
             imgHeight={1828}
             width={230}
-            alt="Home screen, Your kitchen: Cook together, share a pantry, list and budget with up to 4 people."
+            alt="Home screen, Your kitchen: Cook together, share a pantry, list and budget with up to 5 people."
           />
           <div className="w-full max-w-sm">
             <h3 className="text-sm font-extrabold">What the family plan weighs</h3>
@@ -97,7 +97,7 @@ export function Family() {
               ))}
             </ul>
             <p className="mt-4 text-sm text-muted">
-              Up to 4 people share one pantry, one grocery list and one
+              Up to 5 people share one pantry, one grocery list and one
               budget. Kids and anyone without a phone can be added by hand so their portion is
               sized too — and health stays private: shared groceries, personal numbers.
             </p>

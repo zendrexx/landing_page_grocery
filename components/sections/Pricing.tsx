@@ -9,33 +9,36 @@ const CHECK = "M20 6 9 17l-5-5";
 
 const PLANS = [
   {
-    name: "Free",
+    id: "free",
+    name: "Try Zebite",
     tagline: "Everything you need to start.",
     monthly: null,
     annual: null,
     amt: "₱0",
     cta: "Get started",
     featured: false,
-    feats: ["3 AI meal plans per week", "Pantry tracking & grocery lists", "Nutrition targets & daily goals", "Ask Zeb — a few chats a week"],
+    feats: ["3 AI meal plans/week", "3-day plans", "1 receipt scan", "1 grocery photo scan", "3 nutrition estimates", "5 Ask Zeb/day"],
   },
   {
-    name: "Plus",
-    tagline: "For serious weekly planners.",
-    monthly: "₱249",
-    annual: "₱215",
+    id: "plus",
+    name: "⭐ Plus",
+    tagline: "For personal meal planning",
+    monthly: "₱199",
+    annual: "₱166",
     cta: "Choose Plus",
     featured: true,
     badge: "Most popular",
-    feats: ["Everything in Free", "Unlimited AI meal plans", "Unlimited Ask Zeb", "Smarter budget substitutions", "Deeper insights & trends", "Priority generation"],
+    feats: ["4 AI meal plans/day", "7-day plans", "6 receipt scans/day", "15 nutrition estimates/day", "40 Ask Zeb/day", "Personal pantry"],
   },
   {
-    name: "Pro",
-    tagline: "The full kitchen copilot.",
-    monthly: "₱399",
-    annual: "₱333",
+    id: "pro",
+    name: "👑 Pro",
+    tagline: "For your whole household",
+    monthly: "₱349",
+    annual: "₱291",
     cta: "Choose Pro",
     featured: false,
-    feats: ["Everything in Plus", "Receipt scanning (snap to stock)", "Quick snap for groceries or pantry — AI spots the items", "Family kitchen — up to 4 people, portioned per person", "Shared pantry, list & household budget"],
+    feats: ["10 AI meal plans/day", "7-day plans", "10 receipt scans/day", "40 nutrition estimates/day", "100 Ask Zeb/day", "Family Kitchen — up to 5 people", "Shared pantry"],
   },
 ];
 
@@ -84,7 +87,7 @@ export function Pricing() {
         <div className="mt-12 grid items-stretch gap-5 md:grid-cols-3">
           {PLANS.map((p, i) => (
             <Reveal
-              key={p.name}
+              key={p.id}
               delay={i * 80}
               className={`relative flex flex-col rounded-card border p-7 transition-shadow ${
                 p.featured
@@ -107,7 +110,7 @@ export function Pricing() {
               </div>
               <a
                 href="#get"
-                onClick={() => trackCTA(`plan-${p.name.toLowerCase()}`)}
+                onClick={() => trackCTA(`plan-${p.id}`)}
                 className={`mt-5 block rounded-pill py-3 text-center text-sm font-bold transition-colors ${
                   p.featured ? "bg-lime text-lime-ink hover:bg-[#C0EA5C]" : "border border-ink/15 text-ink hover:bg-ink/[0.03]"
                 }`}
