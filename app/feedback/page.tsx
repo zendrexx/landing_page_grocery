@@ -21,6 +21,19 @@ import { CONTACT } from "@/lib/content";
  * `noindex`: a utility page with no search value, reached by a link the app
  * already holds. It is not hidden — just not competing with the home page.
  */
+/**
+ * Dynamic, always. The board below is read per request (`no-store`, see
+ * lib/feedback-board.ts), but Next only *infers* that when SUPABASE_URL is
+ * set while `next build` runs — and it is not: those keys live in
+ * wrangler.jsonc `vars`, which exist only inside the Worker at runtime. So
+ * the build prerendered this page as static, the runtime fetch then bailed it
+ * to dynamic, and every request answered 500 ("Page changed from static to
+ * dynamic at runtime"). Declared here, the render mode is a property of the
+ * page rather than of whichever env vars happened to be present on whichever
+ * machine ran the build.
+ */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Send feedback — Zebite",
   description:
