@@ -15,7 +15,8 @@
  * **Works without it.** Missing env, an unreachable project, a migration that
  * has not been run yet — every failure returns null and the page simply does
  * not render the board. The form above it keeps working. Same rule the
- * waitlist counter follows in components/sections/GetAccess.tsx.
+ * waitlist counter followed in components/sections/GetAccess.tsx before
+ * release took it down.
  *
  * The keys are read server-side and never shipped to the browser (no
  * NEXT_PUBLIC_ prefix). The anon key is publishable by design — RLS is the

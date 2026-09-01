@@ -164,7 +164,7 @@ export function SiteNav() {
                 onClick={() => trackCTA("nav-get")}
                 className="hidden md:inline-flex items-center rounded-pill bg-lime px-4 py-2.5 text-sm font-bold text-lime-ink transition-colors hover:bg-[#C0EA5C] whitespace-nowrap"
               >
-                Get early access
+                Get the app
               </a>
 
               {/* ---- Menu button (mobile) ----------------------------- */}
@@ -227,7 +227,7 @@ export function SiteNav() {
                         }}
                         className="block rounded-[14px] bg-lime px-4 py-3 text-center text-base font-bold text-lime-ink transition-colors hover:bg-[#C0EA5C]"
                       >
-                        Get early access
+                        Get the app
                       </a>
                     </li>
                   </ul>

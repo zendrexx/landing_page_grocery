@@ -7,7 +7,7 @@ import { CONTACT } from "@/lib/content";
 
 /**
  * The form behind /feedback. Posts to /api/feedback, which forwards to
- * Web3Forms — the same service the waitlist uses.
+ * Web3Forms.
  *
  * Two rules this component exists to keep:
  *

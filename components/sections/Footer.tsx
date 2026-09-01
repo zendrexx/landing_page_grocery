@@ -6,7 +6,7 @@ const PRODUCT_LINKS = [
   { href: "#family", label: "Family" },
   { href: "#pricing", label: "Pricing" },
   { href: "#faq", label: "FAQ" },
-  { href: "#get", label: "Get early access" },
+  { href: "#get", label: "Get the app" },
 ];
 
 export function Footer() {

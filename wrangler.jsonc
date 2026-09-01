@@ -31,16 +31,10 @@
   "vars": {
     "SUPABASE_URL": "https://mvdupfxkczgbyavlefsg.supabase.co",
     "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12ZHVwZnhrY3pnYnlhdmxlZnNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMDU4NDEsImV4cCI6MjA5OTU4MTg0MX0.3pILEThQydJIeKnTs0cXYoPe-GhNhtQrdk2IN-qZ8G0"
-  },
-  // The WaitlistCounter class lives in its own Worker
-  // (worker/waitlist-do/), not in this one — OpenNext regenerates this
-  // Worker's entry point on every build, so it can't own a Durable
-  // Object class itself. `script_name` binds cross-script to that
-  // Worker instead. Deploy/redeploy it with `npm run deploy:waitlist-do`
-  // (it owns the class's migrations, so none are declared here).
-  "durable_objects": {
-    "bindings": [
-      { "name": "WAITLIST", "class_name": "WaitlistCounter", "script_name": "zebite-waitlist-do" }
-    ]
   }
+  // The WAITLIST Durable Object binding was removed when the waitlist came
+  // down at release — nothing in this Worker reads a counter any more. The
+  // zebite-waitlist-do Worker is deliberately left deployed and its source
+  // kept at worker/waitlist-do/: its storage still holds the final signup
+  // count, and unbinding is reversible in a way that deleting it is not.
 }

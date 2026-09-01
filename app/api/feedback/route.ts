@@ -1,18 +1,18 @@
 /**
  * Feedback intake for /feedback.
  *
- * Forwards to Web3Forms, the same service the waitlist already uses
- * (components/sections/GetAccess.tsx) — so this needs no new Cloudflare
- * resource, no Durable Object, no D1 database and no secret to set before
- * it works. Deploy is `npm run deploy` and nothing else.
+ * Forwards to Web3Forms — so this needs no new Cloudflare resource, no
+ * Durable Object, no D1 database and no secret to set before it works.
+ * Deploy is `npm run deploy` and nothing else.
  *
- * Why a route handler when GetAccess posts to Web3Forms straight from the
- * browser: the bounds below are the point. A form that reaches a human's
- * inbox wants a length ceiling and a honeypot somewhere the page can't skip,
- * and keeping the access key on this side means it can move to an env var
- * later without touching the page. (The key is not a secret today — it is
- * already in the client bundle via GetAccess — so the literal fallback
- * discloses nothing new.)
+ * Why a route handler rather than posting straight from the browser: the
+ * bounds below are the point. A form that reaches a human's inbox wants a
+ * length ceiling and a honeypot somewhere the page can't skip, and keeping
+ * the access key on this side means it can move to an env var without
+ * touching the page. Until the waitlist came down at release that same key
+ * also shipped in the client bundle (the old GetAccess form posted direct),
+ * so the literal fallback below disclosed nothing new. That is no longer
+ * true: this route is the only place it appears now, and it stays here.
  *
  * This is deliberately NOT the in-app feedback board. That lives in Supabase
  * behind authenticated-only RLS and cannot be read or written from here; see
@@ -21,7 +21,7 @@
 
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
-/** Same form as the waitlist — distinguished by `subject`, not by key. */
+/** Was shared with the waitlist form; still distinguished by `subject`. */
 const FALLBACK_ACCESS_KEY = "7e815f4a-d060-4d2e-ab8c-e89ed28aab88";
 
 /** Generous enough for a real bug report, small enough to bound the inbox. */

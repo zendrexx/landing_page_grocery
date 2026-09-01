@@ -15,6 +15,32 @@ export const CONTACT = {
   email: CONTACT_EMAIL,
 };
 
+/**
+ * Where the app actually is.
+ *
+ * An empty string means that listing is not public yet, and every store
+ * button on the site renders as an unclickable "soon" chip instead of a
+ * link that goes nowhere. Paste a URL in and it becomes a real download
+ * everywhere at once — no other file needs touching.
+ *
+ * The HONESTY RULE at the top of this file bites hardest here: on launch
+ * morning the listing may still be propagating, and a badge that looks
+ * tappable but isn't is the one thing a release page must not ship.
+ *
+ * NOT A TESTER LINK. A closed- or internal-testing opt-in URL
+ * (play.google.com/apps/testing/… or /apps/internaltest/…) resolves only
+ * for Google accounts already on the tester list; to everybody else it is
+ * an "item not available" page that reads as a broken download. While
+ * Zebite is in closed testing that link belongs in mail to the people it
+ * works for — `play` below stays empty until there is a PUBLIC listing.
+ */
+export const STORE = {
+  /** Public listing only. e.g. "https://play.google.com/store/apps/details?id=com.zhevion.zebite" */
+  play: "",
+  /** e.g. "https://apps.apple.com/app/id0000000000" */
+  ios: "",
+};
+
 export const NAV = {
   links: [
     { href: "#how", label: "How it works" },
